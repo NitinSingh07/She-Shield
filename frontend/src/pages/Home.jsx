@@ -1,12 +1,13 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import ForumPost from "../components/ForumPost";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
-    <div className="bg-[#f9f8f6] min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#f9f8f6]">
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 flex-1">
         {/* Welcome Section */}
         <div className="bg-[#fbf5e9] p-6 rounded-lg shadow-md">
           <h1 className="text-4xl font-bold text-[#2c3e50] mb-4">
@@ -29,6 +30,9 @@ const Home = () => {
           <ForumPost />
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
