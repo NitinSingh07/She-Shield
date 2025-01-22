@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Importing icons
+import { FaEdit, FaTrash } from "react-icons/fa";
+import moment from "moment";
 
 const Forum = () => {
-  const { token, user, showNotification } = useAuth();
+  const { token, showNotification } = useAuth();
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [editingPostId, setEditingPostId] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await axios.get(
-        "http://localhost:5000/api/forum/userallposts", // Ensure this endpoint fetches only the logged-in user's posts
+        "http://localhost:5000/api/forum/userallposts",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,9 +52,9 @@ const Forum = () => {
         );
         showNotification("Post created successfully!", "success");
       }
-      setTitle(""); // Clear the input
-      setContent(""); // Clear the input
-      setEditingPostId(null); // Reset editing state
+      setTitle("");
+      setContent("");
+      setEditingPostId(null);
       const response = await axios.get(
         "http://localhost:5000/api/forum/userallposts",
         {
@@ -101,58 +100,93 @@ const Forum = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Your Forum Posts</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md mb-6"
-      >
-        <input
-          type="text"
-          placeholder="Post Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="border p-2 mb-4 w-full rounded"
-        />
-        <textarea
-          placeholder="Post Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          className="border p-2 mb-4 w-full rounded"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          {editingPostId ? "Update Post" : "Create Post"}
-        </button>
-      </form>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map((post) => (
-          <div
-            key={post._id}
-            className="border p-4 rounded shadow-md mb-4 bg-gray-100"
-          >
-            <h3 className="font-bold text-lg">{post.title}</h3>
-            <p className="text-gray-700">{post.content}</p>
-            <div className="flex  flex-row mt-4">
-              <button
-                onClick={() => handleEdit(post)}
-                className="text-blue-600 flex items-center"
+    <div className="container mx-auto p-8 bg-gradient-to-r from-[#f0f9ff] to-[#dff0f4] min-h-screen">
+      {/* Flex Container */}
+      <div className="flex justify-between gap-12">
+        {/* Left Side: Previous Forums */}
+        <div className="flex-1 bg-white p-6 rounded-xl shadow-xl">
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+            Your Last Forums
+          </h2>
+          <div className="space-y-6">
+            {posts.map((post) => (
+              <div
+                key={post._id}
+                className="relative bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
-                <FaEdit className="mr-1" />
-              </button>
+                {/* Action Buttons */}
+                <div className="absolute top-4 right-4 flex gap-4">
+                  <button
+                    onClick={() => handleEdit(post)}
+                    className="text-blue-600 hover:text-blue-700 transition-all"
+                  >
+                    <FaEdit size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(post._id)}
+                    className="text-red-600 hover:text-red-700 transition-all"
+                  >
+                    <FaTrash size={20} />
+                  </button>
+                </div>
+
+                {/* Post Content */}
+                <h3 className="font-semibold text-2xl text-gray-800 mb-4">
+                  {post.title}
+                </h3>
+                <p className="text-gray-700 text-lg mb-6">{post.content}</p>
+                <p className="text-sm text-gray-500">
+                  Posted on{" "}
+                  {moment(post.createdAt).format("MMMM Do YYYY, h:mm A")}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side: Post a Forum */}
+        <div className="flex-1 bg-white p-8 rounded-xl shadow-xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Post a Forum
+            </h1>
+            <p className="text-xl text-gray-600">
+              Share your thoughts and engage with others
+            </p>
+          </div>
+
+          {/* Form Section */}
+          <form onSubmit={handleSubmit} className="space-y-8 max-w-xl mx-auto">
+            <div>
+              <input
+                type="text"
+                placeholder="Post Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className="border border-gray-300 p-4 rounded-xl w-full text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </div>
+            <div>
+              <textarea
+                placeholder="Post Content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+                className="border border-gray-300 p-4 rounded-xl w-full text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                rows="6"
+              />
+            </div>
+            <div className="text-center">
               <button
-                onClick={() => handleDelete(post._id)}
-                className="text-red-600 flex items-center"
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 focus:outline-none transition-all"
               >
-                <FaTrash className="mr-1" /> 
+                {editingPostId ? "Update Post" : "Create Post"}
               </button>
             </div>
-          </div>
-        ))}
+          </form>
+        </div>
       </div>
     </div>
   );

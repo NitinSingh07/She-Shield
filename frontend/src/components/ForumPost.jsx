@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import useAuth from "../hooks/useAuth";
 
 const ForumPost = () => {
-  const { user } = useAuth();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -14,70 +12,36 @@ const ForumPost = () => {
     fetchPosts();
   }, []);
 
-  const handleDelete = async (postId) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/forum/${postId}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      setPosts(posts.filter((post) => post._id !== postId));
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  };
-
-  const handleUpdate = async (postId, updatedContent) => {
-    try {
-      await axios.put(
-        `http://localhost:5000/api/forum/${postId}`,
-        { content: updatedContent },
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      );
-      setPosts(
-        posts.map((post) =>
-          post._id === postId ? { ...post, content: updatedContent } : post
-        )
-      );
-    } catch (error) {
-      console.error("Error updating post:", error);
-    }
-  };
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Latest Forum Posts</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map((post) => (
-          <div key={post._id} className="bg-white p-4 rounded-lg shadow-md">
-            <p className="text-gray-500 text-sm mb-2">
-              Posted by {post.userId.username}
-            </p>
-            <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-            <p className="text-gray-700 mb-4">{post.content}</p>
-            {user && user.id === post.userId._id && (
-              <div className="flex space-x-2 mb-4">
-                <button
-                  onClick={() =>
-                    handleUpdate(
-                      post._id,
-                      prompt("Update your post:", post.content)
-                    )
-                  }
-                  className="text-blue-500 hover:underline"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(post._id)}
-                  className="text-red-500 hover:underline"
-                >
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <h2 className="text-xl font-bold text-[#2c3e50] mb-6">
+        Latest Forum Posts
+      </h2>
+      {posts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post) => (
+            <div
+              key={post._id}
+              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-[#eef6f7]"
+            >
+              <p className="text-sm text-[#7f8c8d] mb-2 italic">
+                Posted by{" "}
+                <span className="text-[#1abc9c] font-medium">
+                  {post.userId.username}
+                </span>
+              </p>
+              <h3 className="text-xl font-semibold text-[#2c3e50] mb-3">
+                {post.title}
+              </h3>
+              <p className="text-gray-700 line-clamp-3">{post.content}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-[#7f8c8d] italic text-center mt-6">
+          No posts available. Be the first to contribute!
+        </p>
+      )}
     </div>
   );
 };
