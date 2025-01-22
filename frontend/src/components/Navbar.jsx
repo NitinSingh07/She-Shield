@@ -31,49 +31,77 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-blue-700 p-4 shadow-lg">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-white text-2xl font-bold hover:text-gray-300">
-          Women Safety Hub
+    <nav className="bg-[#eef6f7] shadow-sm">
+      <div className="container mx-auto flex justify-between items-center p-4">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="text-lg font-semibold text-[#2c3e50] hover:text-[#1abc9c]"
+        >
+          She-Shield
         </Link>
+
+        {/* Menu */}
         <div>
           {!user ? (
-            <>
-              <Link to="/login" className="text-white mr-4 hover:text-gray-300">
+            <div className="flex space-x-4">
+              <Link to="/login" className="text-[#2c3e50] hover:text-[#1abc9c]">
                 Login
               </Link>
-              <Link to="/register" className="text-white hover:text-gray-300">
+              <Link
+                to="/register"
+                className="text-[#2c3e50] hover:text-[#1abc9c]"
+              >
                 Register
               </Link>
-            </>
+            </div>
           ) : (
-            <div className="relative inline-block text-left" ref={dropdownRef}>
-              <div className="flex space-x-4">
-                <Link to="/forum" className="text-white hover:text-gray-300">
+            <div className="relative" ref={dropdownRef}>
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/forum"
+                  className="text-[#2c3e50] hover:text-[#1abc9c]"
+                >
                   Forum
                 </Link>
-                <Link to="/training" className="text-white hover:text-gray-300">
+                <Link
+                  to="/training"
+                  className="text-[#2c3e50] hover:text-[#1abc9c]"
+                >
                   Training
                 </Link>
-                <Link to="/complaints" className="text-white hover:text-gray-300">
+                <Link
+                  to="/complaints"
+                  className="text-[#2c3e50] hover:text-[#1abc9c]"
+                >
                   Complaints
                 </Link>
-                <button onClick={handleDropdownToggle} className="text-white focus:outline-none">
+                {/* User Icon */}
+                <button
+                  onClick={handleDropdownToggle}
+                  className="focus:outline-none"
+                >
                   <img
-                    src="/path/to/user-icon.png"
+                    src="https://via.placeholder.com/40" // Replace with a valid image URL
                     alt="User"
-                    className="w-8 h-8 rounded-full border-2 border-white"
+                    className="w-9 h-9 rounded-full border-2 border-[#1abc9c]"
                   />
                 </button>
               </div>
+
+              {/* Dropdown */}
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                   <div className="py-2">
-                    <p className="px-4 py-2 text-gray-800 border-b border-gray-200">{user.username}</p>
-                    <p className="px-4 py-2 text-gray-800 border-b border-gray-200">{user.email}</p>
+                    <p className="px-4 py-2 text-sm text-[#34495e] border-b border-gray-200 capitalize">
+                      User: {user.username}
+                    </p>
+                    <p className="px-4 py-2 text-sm text-[#34495e] border-b border-gray-200">
+                      e-mail: {user.email}
+                    </p>
                     <button
                       onClick={handleLogout}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                      className="block px-4 py-2 text-left bg-[#34495e] w-full text-sm text-white hover:bg-[#529ba5]"
                     >
                       Logout
                     </button>
