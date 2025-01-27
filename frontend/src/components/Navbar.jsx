@@ -57,12 +57,12 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="relative" ref={dropdownRef}>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-8">
                 <Link
                   to="/forum"
                   className="text-[#2c3e50] hover:text-[#1abc9c]"
                 >
-                  Forum
+                  Post Forum
                 </Link>
                 <Link
                   to="/training"
@@ -74,7 +74,7 @@ const Navbar = () => {
                   to="/complaints"
                   className="text-[#2c3e50] hover:text-[#1abc9c]"
                 >
-                  Complaints
+                  Post Complaint
                 </Link>
                 {/* User Icon */}
                 <button
