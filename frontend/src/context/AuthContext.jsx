@@ -18,7 +18,10 @@ export const AuthProvider = ({ children }) => {
           const response = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/api/auth/me`,
             {
-              headers: { Authorization: `Bearer ${storedToken}` },
+              headers: { 
+                Authorization: `Bearer ${storedToken}`,
+                'Content-Type': 'application/json'
+              },
             }
           );
           setUser(response.data); // Set user data
@@ -40,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
         { username, password }
       );
       setUser(response.data.user); // Set user after login
@@ -48,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", response.data.token);
       showNotification("Login successful!", "success");
     } catch (error) {
-      showNotification("Login failed. Please check your credentials.", error);
+      showNotification(error.response?.data?.message || "Login failed", "error");
     }
   };
 
