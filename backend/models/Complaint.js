@@ -1,9 +1,22 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const ComplaintSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  description: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
+const complaintSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  photo: {
+    type: String
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-module.exports = mongoose.model("complaint", ComplaintSchema);
+module.exports = mongoose.model('Complaint', complaintSchema);

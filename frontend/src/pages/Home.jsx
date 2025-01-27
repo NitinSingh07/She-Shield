@@ -1,7 +1,7 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import ForumPost from "../components/ForumPost";
 import Footer from "../components/Footer";
+import ComplaintPost from "../components/ComplaintPost";
 
 const Home = () => {
   return (
@@ -28,6 +28,9 @@ const Home = () => {
         {/* Forum Section */}
         <div className="mt-8">
           <ForumPost />
+        </div>
+        <div className="mt-8">
+          <ComplaintPost />
         </div>
       </div>
 

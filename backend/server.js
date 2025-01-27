@@ -13,12 +13,12 @@ const forumRoutes = require("./routes/forumRoutes");
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: "https://she-shield.vercel.app",
-  credentials: true,
-};
-app.use(cors(corsOptions));
+const allowedOrigins = [
+  "https://she-shield.vercel.app", // Production frontend
+  "http://localhost:5173", // Local development frontend
+];
+
+app.use(cors());
 app.use(express.json());
 
 // Database connection

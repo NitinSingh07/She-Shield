@@ -1,13 +1,23 @@
 // backend/routes/complaintRoutes.js
 const express = require("express");
+const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
 const {
   createComplaint,
   getComplaints,
+  updateComplaint,
+  deleteComplaint,
+  getAllComplaints,  // Add this new controller
+  upload,
 } = require("../controllers/complaintController");
-const { protect } = require("../middleware/authMiddleware"); // Import the protect middleware specifically
-const router = express.Router();
 
-router.post("/", protect, createComplaint); // Use the protect middleware
-router.get("/", getComplaints); // Optionally, you can protect this too
+// Public route for getting all complaints
+router.get("/all", getAllComplaints);
+
+// Protected routes
+router.post("/", protect, upload.single("photo"), createComplaint);
+router.get("/", protect, getComplaints);
+router.put("/:id", protect, upload.single("photo"), updateComplaint);
+router.delete("/:id", protect, deleteComplaint);
 
 module.exports = router;
