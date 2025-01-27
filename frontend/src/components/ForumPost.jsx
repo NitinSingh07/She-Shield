@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const ForumPost = () => {
@@ -6,7 +6,9 @@ const ForumPost = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await axios.get("http://localhost:5000/api/forum");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/forum`
+      );
       setPosts(response.data);
     };
     fetchPosts();

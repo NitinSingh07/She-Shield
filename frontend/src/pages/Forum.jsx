@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -15,7 +15,7 @@ const Forum = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await axios.get(
-        "http://localhost:5000/api/forum/userallposts",
+        `${import.meta.env.VITE_BACKEND_URL}/api/forum/userallposts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ const Forum = () => {
     try {
       if (editingPostId) {
         await axios.put(
-          `http://localhost:5000/api/forum/${editingPostId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/forum/${editingPostId}`,
           { title, content },
           {
             headers: {
@@ -43,7 +43,7 @@ const Forum = () => {
         showNotification("Post updated successfully!", "success");
       } else {
         await axios.post(
-          "http://localhost:5000/api/forum",
+          `${import.meta.env.VITE_BACKEND_URL}/api/forum`,
           { title, content },
           {
             headers: {
@@ -57,7 +57,7 @@ const Forum = () => {
       setContent("");
       setEditingPostId(null);
       const response = await axios.get(
-        "http://localhost:5000/api/forum/userallposts",
+        `${import.meta.env.VITE_BACKEND_URL}/api/forum/userallposts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ const Forum = () => {
       setPosts(response.data);
     } catch (error) {
       console.error("Error submitting post:", error.response.data);
-      showNotification("Failed to submit post.", "error");
+      showNotification("Failed to submit post.", error);
     }
   };
 
@@ -79,14 +79,17 @@ const Forum = () => {
 
   const handleDelete = async (postId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/forum/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/forum/${postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       showNotification("Post deleted successfully!", "success");
       const response = await axios.get(
-        "http://localhost:5000/api/forum/userallposts",
+        `${import.meta.env.VITE_BACKEND_URL}/api/forum/userallposts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -96,7 +99,7 @@ const Forum = () => {
       setPosts(response.data);
     } catch (error) {
       console.error("Error deleting post:", error.response.data);
-      showNotification("Failed to delete post.", "error");
+      showNotification("Failed to delete post.", error);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ const Complaints = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:5000/api/complaints",
+        `${import.meta.env.VITE_BACKEND_URL}/api/complaints`,
         { description },
         {
           headers: {
@@ -24,7 +24,7 @@ const Complaints = () => {
       showNotification("Complaint submitted successfully!", "success"); // Use showNotification
       navigate("/"); // Redirect to home on successful submission
     } catch (error) {
-      showNotification("Failed to submit complaint.", "error"); // Use showNotification
+      showNotification("Failed to submit complaint.", error); // Use showNotification
     }
   };
 

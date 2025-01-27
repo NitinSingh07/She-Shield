@@ -12,7 +12,13 @@ const trainingRoutes = require("./routes/trainingRoutes");
 const forumRoutes = require("./routes/forumRoutes");
 
 const app = express();
-app.use(cors());
+
+// CORS configuration
+const corsOptions = {
+  origin: "https://she-shield.vercel.app",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Database connection

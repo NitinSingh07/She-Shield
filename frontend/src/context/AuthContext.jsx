@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
 export const AuthContext = createContext();
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       const fetchUser = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/auth/me",
+            `${import.meta.env.VITE_BACKEND_URL}/api/auth/me`,
             {
               headers: { Authorization: `Bearer ${storedToken}` },
             }
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", response.data.token);
       showNotification("Login successful!", "success");
     } catch (error) {
-      showNotification("Login failed. Please check your credentials.", "error");
+      showNotification("Login failed. Please check your credentials.", error);
     }
   };
 
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user); // Set user after registration
       showNotification("Registration successful! Please log in.", "success");
     } catch (error) {
-      showNotification("Registration failed. Please try again.", "error");
+      showNotification("Registration failed. Please try again.", error);
     }
   };
 

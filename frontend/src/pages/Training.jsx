@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,9 @@ const Training = () => {
 
   useEffect(() => {
     const fetchTrainings = async () => {
-      const response = await axios.get("http://localhost:5000/api/training");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/training`
+      );
       setTrainings(response.data);
     };
     fetchTrainings();
@@ -21,7 +23,7 @@ const Training = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:5000/api/training",
+        `${import.meta.env.VITE_BACKEND_URL}/api/training`,
         { title },
         {
           headers: {
@@ -33,7 +35,7 @@ const Training = () => {
       setMessage("Training module submitted successfully!");
       navigate("/"); // Redirect to home on successful submission
     } catch (error) {
-      setMessage("Failed to submit training module.");
+      setMessage("Failed to submit training module.", error);
     }
   };
 
