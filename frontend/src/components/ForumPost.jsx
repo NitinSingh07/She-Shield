@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { FaUser } from "react-icons/fa";
 
 const ForumPost = () => {
   const [posts, setPosts] = useState([]);
@@ -15,34 +16,42 @@ const ForumPost = () => {
   }, []);
 
   return (
-    <div>
-      <h2 className="text-xl font-bold text-[#2c3e50] mb-6">
-        Latest Forum Posts
+    <div className="container mx-auto px-6 py-8">
+      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide">
+        Latest News or Forums
       </h2>
       {posts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
             <div
               key={post._id}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-[#eef6f7]"
+              className="relative bg-gradient-to-tr from-[#e8f8f5] to-[#d8f8e7] p-6 rounded-xl shadow-lg  border border-[#b2dfdb]"
             >
-              <p className="text-sm text-[#7f8c8d] mb-2 italic">
-                Posted by{" "}
-                <span className="text-[#1abc9c] font-medium">
-                  {post.userId.username}
-                </span>
-              </p>
-              <h3 className="text-xl font-semibold text-[#2c3e50] mb-3">
+              {/* User Info */}
+              <div className="absolute top-0 left-0 bg-gradient-to-r from-[#ff7e5f] to-[#feb47b] text-white text-sm px-4 py-2 rounded-tr-3xl rounded-bl-3xl shadow-md transform translate-x-4 -translate-y-4">
+                <FaUser className="inline-block mr-2" />
+                {post.userId.username}
+              </div>
+
+              {/* Title */}
+              <h3 className="text-2xl font-semibold text-[#2c3e50] mb-4">
                 {post.title}
               </h3>
-              <p className="text-gray-700 line-clamp-3">{post.content}</p>
+
+              {/* Content */}
+              <p className="text-gray-700 text-base line-clamp-3 mb-6">
+                {post.content}
+              </p>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-[#7f8c8d] italic text-center mt-6">
-          No posts available. Be the first to contribute!
-        </p>
+        <div className="text-center mt-10">
+          <p className="text-[#7f8c8d] italic text-lg mb-4">
+            No posts available. Be the first to contribute!
+          </p>
+          <div className="text-6xl">📭</div>
+        </div>
       )}
     </div>
   );

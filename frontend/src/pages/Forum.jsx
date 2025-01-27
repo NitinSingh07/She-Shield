@@ -103,143 +103,144 @@ const Forum = () => {
     }
   };
 
- return (
-   <div>
-     <Navbar />
-     <div className="min-h-screen bg-gray-50 p-8">
-       {/* Flex Container */}
-       <div className="flex justify-between gap-12">
-         {/* Left Side: Previous Forums */}
-         <div className="w-1/2 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center border-b pb-4">
-             Your Last Forums
-           </h2>
-           <div className="space-y-6">
-             {posts.length === 0 ? (
-               <div className="text-center py-8">
-                 <p className="text-gray-500 text-lg">
-                   You haven’t posted any forums yet.
-                 </p>
-                 <p className="text-gray-400 mt-2">
-                   Your forums will appear here once submitted.
-                 </p>
-               </div>
-             ) : (
-               posts.map((post) => (
-                 <div
-                   key={post._id}
-                   className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100"
-                 >
-                   <div className="flex justify-between items-start mb-4">
-                     <div>
-                       <h3 className="font-semibold text-xl text-gray-800">
-                         {post.title}
-                       </h3>
-                       <p className="text-sm text-gray-500 mt-1">
-                         {moment(post.createdAt).format("MMMM Do YYYY, h:mm A")}
-                       </p>
-                     </div>
-                     <div className="flex gap-3">
-                       <button
-                         onClick={() => handleEdit(post)}
-                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
-                         title="Edit Post"
-                       >
-                         <FaEdit size={20} />
-                       </button>
-                       <button
-                         onClick={() => handleDelete(post._id)}
-                         className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
-                         title="Delete Post"
-                       >
-                         <FaTrash size={20} />
-                       </button>
-                     </div>
-                   </div>
-                   <p className="text-gray-700 whitespace-pre-wrap">
-                     {post.content}
-                   </p>
-                 </div>
-               ))
-             )}
-           </div>
-         </div>
+  return (
+    <div>
+      <Navbar />
+      <div className="min-h-screen bg-gray-50 p-8">
+        {/* Flex Container */}
+        <div className="flex justify-between gap-12">
+          {/* Left Side: Previous Forums */}
+          <div className="w-1/2 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            <h2 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-4">
+              Your Last Forums
+            </h2>
+            <div className="space-y-6">
+              {posts.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 text-lg">
+                    You haven’t posted any forums yet.
+                  </p>
+                  <p className="text-gray-400 mt-2">
+                    Your forums will appear here once submitted.
+                  </p>
+                </div>
+              ) : (
+                posts.map((post) => (
+                  <div
+                    key={post._id}
+                    className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="font-semibold text-xl text-gray-800">
+                          {post.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {moment(post.createdAt).format(
+                            "MMMM Do YYYY, h:mm A"
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleEdit(post)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                          title="Edit Post"
+                        >
+                          <FaEdit size={20} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(post._id)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                          title="Delete Post"
+                        >
+                          <FaTrash size={20} />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 whitespace-pre-wrap">
+                      {post.content}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
 
-         {/* Right Side: Post a Forum */}
-         <div className="w-1/2 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-           <div className="text-center mb-8">
-             <h1 className="text-3xl font-bold text-gray-800 mb-4">
-               Post a Forum
-             </h1>
-             <p className="text-lg text-gray-600">
-               Share your thoughts and engage with others
-             </p>
-           </div>
+          {/* Right Side: Post a Forum */}
+          <div className="w-1/2 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            <div className="text-center mb-8">
+              <h2 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-4">
+                Post a Forum
+              </h2>
+              <p className="text-lg text-gray-600">
+                Share your thoughts and engage with others
+              </p>
+            </div>
 
-           {/* Form Section */}
-           <form onSubmit={handleSubmit} className="space-y-6">
-             <div>
-               <label
-                 className="block text-sm font-medium text-gray-700 mb-2"
-                 htmlFor="title"
-               >
-                 Title
-               </label>
-               <input
-                 id="title"
-                 type="text"
-                 placeholder="Enter a title"
-                 value={title}
-                 onChange={(e) => setTitle(e.target.value)}
-                 required
-                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-               />
-             </div>
-             <div>
-               <label
-                 className="block text-sm font-medium text-gray-700 mb-2"
-                 htmlFor="content"
-               >
-                 Content
-               </label>
-               <textarea
-                 id="content"
-                 placeholder="Enter content for your forum"
-                 value={content}
-                 onChange={(e) => setContent(e.target.value)}
-                 required
-                 rows="6"
-                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"
-               />
-             </div>
-             <div className="flex gap-4">
-               <button
-                 type="submit"
-                 className="flex-1 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium"
-               >
-                 {editingPostId ? "Update Post" : "Create Post"}
-               </button>
-               {editingPostId && (
-                 <button
-                   type="button"
-                   onClick={() => {
-                     setEditingPostId(null);
-                     setTitle("");
-                     setContent("");
-                   }}
-                   className="flex-1 bg-gray-500 text-white py-3 rounded-xl hover:bg-gray-600 transition-colors duration-200 font-medium"
-                 >
-                   Cancel
-                 </button>
-               )}
-             </div>
-           </form>
-         </div>
-       </div>
-     </div>
-   </div>
- );
-
+            {/* Form Section */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="title"
+                >
+                  Title
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  placeholder="Enter a title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="content"
+                >
+                  Content
+                </label>
+                <textarea
+                  id="content"
+                  placeholder="Enter content for your forum"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                  rows="6"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"
+                />
+              </div>
+              <div className="flex gap-4">
+                <button
+                  type="submit"
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium"
+                >
+                  {editingPostId ? "Update Post" : "Create Post"}
+                </button>
+                {editingPostId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingPostId(null);
+                      setTitle("");
+                      setContent("");
+                    }}
+                    className="flex-1 bg-gray-500 text-white py-3 rounded-xl hover:bg-gray-600 transition-colors duration-200 font-medium"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Forum;

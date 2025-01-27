@@ -31,12 +31,12 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-[#e5f7f9] shadow-sm">
-      <div className="container mx-auto flex justify-between items-center p-4">
+    <nav className="bg-[#fcb057] shadow-lg">
+      <div className="container mx-auto flex justify-between items-center p-5">
         {/* Logo */}
         <Link
           to="/"
-          className="text-lg font-semibold text-[#2c3e50] hover:text-[#1abc9c]"
+          className="text-2xl font-bold text-white hover:text-gray-200 transition duration-300"
         >
           She-Shield
         </Link>
@@ -44,64 +44,69 @@ const Navbar = () => {
         {/* Menu */}
         <div>
           {!user ? (
-            <div className="flex space-x-4">
-              <Link to="/login" className="text-[#2c3e50] hover:text-[#1abc9c]">
+            <div className="flex space-x-6">
+              <Link
+                to="/login"
+                className="text-white font-medium hover:text-gray-200 transition duration-300"
+              >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="text-[#2c3e50] hover:text-[#1abc9c]"
+                className="bg-white text-[#1abc9c] px-4 py-2 rounded-full font-semibold shadow-md hover:bg-gray-200 transition duration-300"
               >
                 Register
               </Link>
             </div>
           ) : (
             <div className="relative" ref={dropdownRef}>
-              <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-6">
                 <Link
                   to="/forum"
-                  className="text-[#2c3e50] hover:text-[#1abc9c]"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Post Forum
+                  Forum
                 </Link>
                 <Link
                   to="/training"
-                  className="text-[#2c3e50] hover:text-[#1abc9c]"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
                   Training
                 </Link>
                 <Link
                   to="/complaints"
-                  className="text-[#2c3e50] hover:text-[#1abc9c]"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Post Complaint
+                  Complaints
                 </Link>
+
                 {/* User Icon */}
                 <button
                   onClick={handleDropdownToggle}
-                  className="focus:outline-none"
+                  className="focus:outline-none relative group"
                 >
                   <img
-                    src="https://via.placeholder.com/40" // Replace with a valid image URL
+                    src="https://via.placeholder.com/40"
                     alt="User"
-                    className="w-9 h-9 rounded-full border-2 border-[#1abc9c]"
+                    className="w-10 h-10 rounded-full border-2 border-white shadow-md"
                   />
+                  <span className="absolute top-0 right-0 w-3 h-3 bg-[#e74c3c] rounded-full border-2 border-white"></span>
                 </button>
               </div>
 
               {/* Dropdown */}
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                <div className="absolute right-0 mt-4 w-56 bg-white rounded-xl shadow-lg z-10 overflow-hidden animate-fade-in">
                   <div className="py-2">
-                    <p className="px-4 py-2 text-sm text-[#34495e] border-b border-gray-200 capitalize">
-                      User: {user.username}
+                    <p className="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-200 capitalize">
+                      👤 {user.username}
                     </p>
-                    <p className="px-4 py-2 text-sm text-[#34495e] border-b border-gray-200">
-                      e-mail: {user.email}
+                    <p className="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-200">
+                      ✉️ {user.email}
                     </p>
                     <button
                       onClick={handleLogout}
-                      className="block px-4 py-2 text-left bg-[#34495e] w-full text-sm text-white hover:bg-[#529ba5]"
+                      className="block px-4 py-2 text-left text-white font-semibold bg-[#e74c3c] hover:bg-[#c0392b] transition duration-300 w-full"
                     >
                       Logout
                     </button>
