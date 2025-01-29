@@ -24,22 +24,25 @@ const Home = () => {
     margin: "-100px",
   });
   const mapInView = useInView(mapRef, { triggerOnce: false, margin: "-100px" });
-
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-[#fff7eb]">
+    <div className="min-h-screen bg-gradient-to-br from-[#ffecd2] via-[#fcb69f] to-[#ffdde1]">
       <Navbar />
-      <div className="container mx-auto px-6 py-8 flex-1">
-        {/* Enhanced Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
+
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <main className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative bg-gradient-to-r from-[#fff7eb] via-[#fbf0dc] to-[#f7e6cc] rounded-3xl shadow-2xl overflow-hidden border border-amber-100"
+          className="text-center mb-20"
         >
-          {/* Decorative Elements */}
-          <div className="absolute -top-20 -left-20 w-60 h-60 bg-[#ffe3b3] rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute bottom-0 right-0 w-60 h-60 bg-[#fcd49b] rounded-full blur-3xl opacity-50"></div>
-
           <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12">
             {/* Left Content */}
             <div className="space-y-6">
@@ -71,7 +74,7 @@ const Home = () => {
                 for safety and equality.
               </motion.p>
               <p className="text-sm md:text-base text-[#7f8c8d] italic text-center">
-                “Safety is not a privilege, it’s a basic right for every woman.”
+                "Safety is not a privilege, it's a basic right for every woman."
               </p>
 
               {/* Safety Statistics */}
@@ -111,89 +114,97 @@ const Home = () => {
               </motion.div>
             </div>
 
-            {/* Enhanced Right Image Section */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="relative"
-            >
-              <div className="relative h-full flex items-center justify-center">
-                {/* Main Image */}
-                <div className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-all duration-500">
-                  <img
-                    src="/women-empowerment.png" // Add your image path here
-                    alt="Women Empowerment"
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Overlay Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#e67e22]/20 to-transparent"></div>
+            {/* Right Content - Hero Images with Creative Layout */}
+            <div className="hidden lg:block relative h-full">
+              <motion.div
+                initial={{ opacity: 0, x: 30, rotate: -5 }}
+                animate={{ opacity: 1, x: 0, rotate: -5 }}
+                transition={{ delay: 0.4 }}
+                className="absolute top-4 right-4 w-[80%] transform hover:scale-105 hover:rotate-0 transition-all duration-300"
+              >
+                <img
+                  src="/hero.jpg"
+                  alt="Women Protection Illustration"
+                  className="w-full h-auto object-cover rounded-2xl shadow-2xl"
+                />
+              </motion.div>
 
-                  {/* Floating Elements */}
-                  <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl"></div>
-                  <div className="absolute -left-4 -top-4 w-32 h-32 bg-orange-400/20 rounded-full blur-2xl"></div>
-                </div>
+              {/* <motion.div
+                initial={{ opacity: 0, x: -30, rotate: 5 }}
+                animate={{ opacity: 1, x: 0, rotate: 5 }}
+                transition={{ delay: 0.6 }}
+                className="absolute top-20 left-4 w-[80%] transform hover:scale-105 hover:rotate-0 transition-all duration-300"
+              >
+                <img
+                  src="/images/women-empowerment.png"
+                  alt="Women Empowerment"
+                  className="w-full h-auto object-cover rounded-2xl shadow-2xl border-4 border-white/50"
+                />
+              </motion.div> */}
 
-                {/* Enhanced Floating Badges */}
-                <div className="absolute -right-4 top-10 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-amber-100">
-                  <MdSecurity className="text-[#e67e22] text-2xl mb-1" />
-                  <div className="text-sm font-semibold text-gray-800">
-                    Security
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    Advanced Protection
-                  </div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-[70%] hover:scale-105 transition-all duration-300"
+              >
+                <img
+                  src="/hero2.avif"
+                  alt="Community Support"
+                  className="w-full h-auto object-cover rounded-2xl shadow-2xl border-4 border-white/50"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                  <span className="text-white text-lg font-semibold">
+                    Together We Stand Stronger
+                  </span>
                 </div>
+              </motion.div>
 
-                <div className="absolute -left-4 bottom-10 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-amber-100">
-                  <FaHandHoldingHeart className="text-red-500 text-2xl mb-1" />
-                  <div className="text-sm font-semibold text-gray-800">
-                    Community Care
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    Always Here for You
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              {/* Decorative Elements */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                transition={{ delay: 1, duration: 1 }}
+                className="absolute -z-10 w-full h-full"
+              >
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-orange-200 rounded-full filter blur-3xl opacity-20"></div>
+                <div className="absolute top-20 right-20 w-24 h-24 bg-pink-200 rounded-full filter blur-2xl opacity-20"></div>
+              </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Interactive Map Section */}
-        <motion.div
+        {/* Map Section */}
+        <motion.section
           ref={mapRef}
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={mapInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 1 }}
-          className="mt-16"
+          transition={{ duration: 0.8 }}
+          className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-20"
         >
           <Map />
-        </motion.div>
+        </motion.section>
 
-        {/* Forum Section */}
-        <motion.div
+        {/* Forum and Complaints Sections */}
+        <motion.section
           ref={forumRef}
-          initial={{ opacity: 0, x: -50 }}
+          initial={{ opacity: 0, x: -20 }}
           animate={forumInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mt-16"
+          transition={{ duration: 0.8 }}
         >
           <ForumPost />
-        </motion.div>
+        </motion.section>
 
-        {/* Complaint Section */}
-        <motion.div
+        <motion.section
           ref={complaintRef}
-          initial={{ opacity: 0, x: 50 }}
+          initial={{ opacity: 0, x: 20 }}
           animate={complaintInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16"
+          transition={{ duration: 0.8 }}
         >
           <ComplaintPost />
-        </motion.div>
-      </div>
+        </motion.section>
+      </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
