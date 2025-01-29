@@ -281,7 +281,7 @@ const Map = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 rounded-3xl">
+    <div className="flex h-screen rounded-3xl">
       {/* Left Side - Map */}
       <div className="w-1/2 h-screen p-4">
         <div className="h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
