@@ -65,19 +65,19 @@ const Navbar = () => {
                   to="/forum"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Forum
+                  Post a Forum
                 </Link>
                 <Link
                   to="/training"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Training
+                  Post Training Module
                 </Link>
                 <Link
                   to="/complaints"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Complaints
+                  Regiter a Complaint
                 </Link>
 
                 {/* User Icon */}
