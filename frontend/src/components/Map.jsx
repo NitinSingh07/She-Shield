@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {
+  MapPinIcon,
+  ShieldExclamationIcon,
+  UserIcon,
+  ExclamationTriangleIcon,
+  UserGroupIcon,
+  DocumentDuplicateIcon,
+  ChatBubbleBottomCenterTextIcon,
+} from "@heroicons/react/24/solid";
 
 // Add this state coordinates mapping at the top of the file, outside the component
 const stateCoordinates = {
@@ -142,110 +151,193 @@ const Map = () => {
     // Add Cyber Crime Data Markers with detailed information
     cyberCrimesData.forEach((record) => {
       const popupContent = `
-        <div class="popup-content">
-          <h3>${record.state_ut}</h3>
-          <ul>
-            <li>Cyber Blackmailing/Threatening: ${record.cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_}</li>
-            <li>Cyber Pornography: ${record.cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_}</li>
-            <li>Cyber Stalking: ${record.cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_}</li>
-            <li>Defamation/Morphing: ${record.defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_}</li>
-            <li>Fake Profile: ${record.fake_profile__it_act_r_w_ipc_sll_}</li>
-            <li>Other Crimes: ${record.other_crimes_against_women}</li>
-            <li><strong>Total Crimes: ${record.total_cyber_crimes_against_women}</strong></li>
-          </ul>
+        <div class="p-4 max-w-sm">
+          <h3 class="text-lg font-bold text-gray-800 mb-3">${record.state_ut}</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Cyber Blackmailing:</span>
+              <span class="font-semibold text-red-600">${record.cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Cyber Pornography:</span>
+              <span class="font-semibold text-pink-600">${record.cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Cyber Stalking:</span>
+              <span class="font-semibold text-purple-600">${record.cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Defamation/Morphing:</span>
+              <span class="font-semibold text-indigo-600">${record.defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Fake Profile:</span>
+              <span class="font-semibold text-orange-600">${record.fake_profile__it_act_r_w_ipc_sll_}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Other Crimes:</span>
+              <span class="font-semibold text-green-600">${record.other_crimes_against_women}</span>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t mt-2">
+              <span class="text-sm font-bold text-gray-700">Total Crimes:</span>
+              <span class="font-bold text-blue-600">${record.total_cyber_crimes_against_women}</span>
+            </div>
+          </div>
         </div>
       `;
 
-      //   L.marker([record.latitude, record.longitude])
-      //     .addTo(newMarkersLayer)
-
-      //     .bindPopup(popupContent);
+      L.marker([record.latitude, record.longitude])
+        .addTo(newMarkersLayer)
+        .bindPopup(popupContent);
     });
 
     setMarkersLayer(newMarkersLayer);
   }, [cyberCrimesData, map]);
 
   return (
-    <div className="App">
-      <h2 className="text-2xl font-bold mb-4">Cyber Crimes against Women</h2>
+    <div className="App bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen p-6">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center justify-center gap-2">
+        <ShieldExclamationIcon className="h-8 w-8 text-red-500" />
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-purple-600">
+          Cyber Crimes against Women in our Country
+        </span>
+      </h2>
 
       {/* Map Display */}
-      <div id="map" style={{ height: "500px", width: "100%" }}></div>
+      <div
+        id="map"
+        className="rounded-xl shadow-lg overflow-hidden"
+        style={{ height: "500px", width: "100%" }}
+      ></div>
 
       {/* Info Panel */}
-      <div className="info-panel p-4 bg-gray-100">
+      <div className="info-panel mt-6 rounded-xl bg-white shadow-lg p-6">
         {error ? (
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-500 flex items-center gap-2">
+            <ExclamationTriangleIcon className="h-5 w-5" />
+            {error}
+          </p>
         ) : !userLocation ? (
-          <p className="text-gray-700">Loading location...</p>
+          <p className="text-gray-700 animate-pulse flex items-center gap-2">
+            <MapPinIcon className="h-5 w-5" />
+            Loading location...
+          </p>
         ) : (
           <div>
             {cyberCrimesData.length > 0 && (
-              <div className="crime-statistics bg-white p-4 rounded-lg shadow">
-                <h3 className="text-xl font-semibold mb-3">
-                  You are in {cyberCrimesData[0].state_ut}
-                </h3>
-                <p className="text-lg mb-4">
-                  Your Coordinates: {userLocation.lat},{" "}
-                  {userLocation.lng}
-                </p>
+              <div className="crime-statistics">
+                <div className="mb-6 border-b pb-4">
+                  <h3 className="text-2xl font-semibold mb-2 flex items-center gap-2">
+                    <UserIcon className="h-6 w-6 text-blue-500" />
+                    You are in {cyberCrimesData[0].state_ut}
+                  </h3>
+                  <p className="text-gray-600 flex items-center gap-2">
+                    <MapPinIcon className="h-5 w-5 text-gray-400" />
+                    Coordinates: {userLocation.lat.toFixed(4)},{" "}
+                    {userLocation.lng.toFixed(4)}
+                  </p>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="stat-card p-3 bg-gray-50 rounded">
-                    <h4 className="font-medium">
-                      Cyber Blackmailing/Threatening
-                    </h4>
-                    <p className="text-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-red-50 to-red-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Cyber Blackmailing
+                      </h4>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">
                       {
                         cyberCrimesData[0]
                           .cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_
                       }
                     </p>
                   </div>
-                  <div className="stat-card p-3 bg-gray-50 rounded">
-                    <h4 className="font-medium">Cyber Pornography</h4>
-                    <p className="text-lg">
-                      {
-                        cyberCrimesData[0]
-                          .cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_
-                      }
-                    </p>
-                  </div>
-                  <div className="stat-card p-3 bg-gray-50 rounded">
-                    <h4 className="font-medium">Cyber Stalking</h4>
-                    <p className="text-lg">
+
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <UserGroupIcon className="h-5 w-5 text-purple-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Cyber Stalking
+                      </h4>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">
                       {
                         cyberCrimesData[0]
                           .cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_
                       }
                     </p>
                   </div>
-                  <div className="stat-card p-3 bg-gray-50 rounded">
-                    <h4 className="font-medium">Defamation/Morphing</h4>
-                    <p className="text-lg">
+
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <DocumentDuplicateIcon className="h-5 w-5 text-orange-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Fake Profiles
+                      </h4>
+                    </div>
+                    <p className="text-2xl font-bold text-orange-600">
+                      {cyberCrimesData[0].fake_profile__it_act_r_w_ipc_sll_}
+                    </p>
+                  </div>
+
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-pink-50 to-pink-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ExclamationTriangleIcon className="h-5 w-5 text-pink-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Cyber Pornography
+                      </h4>
+                    </div>
+                    <p className="text-2xl font-bold text-pink-600">
+                      {
+                        cyberCrimesData[0]
+                          .cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_
+                      }
+                    </p>
+                  </div>
+
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <UserIcon className="h-5 w-5 text-indigo-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Defamation/Morphing
+                      </h4>
+                    </div>
+                    <p className="text-2xl font-bold text-indigo-600">
                       {
                         cyberCrimesData[0]
                           .defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_
                       }
                     </p>
                   </div>
-                  <div className="stat-card p-3 bg-gray-50 rounded">
-                    <h4 className="font-medium">Fake Profile</h4>
-                    <p className="text-lg">
-                      {cyberCrimesData[0].fake_profile__it_act_r_w_ipc_sll_}
-                    </p>
-                  </div>
-                  <div className="stat-card p-3 bg-gray-50 rounded">
-                    <h4 className="font-medium">Other Crimes</h4>
-                    <p className="text-lg">
+
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-green-50 to-green-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ExclamationTriangleIcon className="h-5 w-5 text-green-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Other Crimes
+                      </h4>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">
                       {cyberCrimesData[0].other_crimes_against_women}
                     </p>
                   </div>
-                  <div className="stat-card p-3 bg-blue-50 rounded col-span-2">
-                    <h4 className="font-medium">Total Cyber Crimes</h4>
-                    <p className="text-2xl font-bold text-blue-600">
-                      {cyberCrimesData[0].total_cyber_crimes_against_women}
-                    </p>
+
+                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 col-span-full hover:shadow-md transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ChatBubbleBottomCenterTextIcon className="h-5 w-5 text-blue-500" />
+                      <h4 className="font-medium text-gray-800">
+                        Total Cyber Crimes
+                      </h4>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-3xl font-bold text-blue-600">
+                        {cyberCrimesData[0].total_cyber_crimes_against_women}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Total reported cases in {cyberCrimesData[0].state_ut}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -254,42 +346,51 @@ const Map = () => {
         )}
       </div>
 
-      {/* JSON Data Display */}
-      <div className="data-panel p-4">
-        <h2 className="text-xl font-bold mb-2">Cyber Crime Data</h2>
+      {/* Data Table */}
+      <div className="data-panel mt-6 bg-white rounded-xl shadow-lg p-6">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
+          <DocumentDuplicateIcon className="h-6 w-6 text-gray-600" />
+          Cyber Crime Data
+        </h2>
         {cyberCrimesData.length > 0 ? (
-          <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border border-gray-300 px-4 py-2">State</th>
-                <th className="border border-gray-300 px-4 py-2">
-                  Total Crimes
-                </th>
-                <th className="border border-gray-300 px-4 py-2">Latitude</th>
-                <th className="border border-gray-300 px-4 py-2">Longitude</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cyberCrimesData.map((record, index) => (
-                <tr key={index} className="border border-gray-300">
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.state_ut}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.total_cyber_crimes_against_women}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.latitude}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.longitude}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-gray-50 to-gray-100">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    State
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    Total Crimes
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    Coordinates
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {cyberCrimesData.map((record, index) => (
+                  <tr
+                    key={index}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-800">
+                      {record.state_ut}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-blue-600 font-semibold">
+                      {record.total_cyber_crimes_against_women}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                      {record.latitude.toFixed(4)},{" "}
+                      {record.longitude.toFixed(4)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
-          <p className="text-gray-700">No data available</p>
+          <p className="text-gray-500 italic">No data available</p>
         )}
       </div>
     </div>
