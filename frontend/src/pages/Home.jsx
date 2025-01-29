@@ -2,40 +2,86 @@ import Navbar from "../components/Navbar";
 import ForumPost from "../components/ForumPost";
 import Footer from "../components/Footer";
 import ComplaintPost from "../components/ComplaintPost";
+import Map from "../components/Map";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 const Home = () => {
+  const forumRef = useRef(null);
+  const complaintRef = useRef(null);
+  const mapRef = useRef(null);
+
+  const forumInView = useInView(forumRef, {
+    triggerOnce: false,
+    margin: "-100px",
+  });
+  const complaintInView = useInView(complaintRef, {
+    triggerOnce: false,
+    margin: "-100px",
+  });
+  const mapInView = useInView(mapRef, { triggerOnce: false, margin: "-100px" });
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#f9f8f6] via-[#f1f8ff] to-[#e8f8f5]">
       <Navbar />
-      <div className="container mx-auto px-6 py-12 flex-1">
+      <div className="container mx-auto px-6 py-8 flex-1">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-[#fff9f0] via-[#ffedcc] to-[#ffd699] p-10 rounded-3xl shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-40 h-40 bg-[#ffe3b3] rounded-full blur-2xl opacity-50 -translate-x-10 -translate-y-10"></div>
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#fcd49b] rounded-full blur-2xl opacity-50 translate-x-10 translate-y-10"></div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-[#2c3e50] mb-6 tracking-tight leading-tight">
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="bg-gradient-to-r from-[#fff9f0] via-[#ffedcc] to-[#ffd699] p-10 rounded-3xl shadow-2xl relative overflow-hidden"
+        >
+          <div className="absolute -top-10 -left-10 w-44 h-44 bg-[#ffe3b3] rounded-full blur-3xl opacity-50"></div>
+          <div className="absolute bottom-0 right-0 w-44 h-44 bg-[#fcd49b] rounded-full blur-3xl opacity-50"></div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#2c3e50] mb-6 tracking-tight leading-tight text-center">
             Welcome to <span className="text-[#e67e22]">She-Shield</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#34495e] mb-8 leading-relaxed">
-            Empowering women in rural areas by providing access to safety
-            resources, reporting tools, and a supportive community. Together, we
-            stand for safety and equality.
+          <p className="text-lg md:text-xl text-[#34495e] mb-8 leading-relaxed text-center">
+            Empowering women in rural areas with access to safety resources,
+            reporting tools, and a supportive community. Together, we stand for
+            safety and equality.
           </p>
-          <div className="bg-[#fff] border-l-4 border-[#e67e22] p-6 rounded-lg shadow-md">
+          <div className="bg-white border-l-4 border-[#e67e22] p-6 rounded-lg shadow-md max-w-lg mx-auto">
             <p className="text-sm md:text-base text-[#7f8c8d] italic text-center">
               “Safety is not a privilege, it’s a basic right for every woman.”
             </p>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Interactive Map Section */}
+        <motion.div
+          ref={mapRef}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={mapInView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 1 }}
+          className="mt-16"
+        >
+          <Map />
+        </motion.div>
 
         {/* Forum Section */}
-        <div className="mt-16">
+        <motion.div
+          ref={forumRef}
+          initial={{ opacity: 0, x: -50 }}
+          animate={forumInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mt-16"
+        >
           <ForumPost />
-        </div>
+        </motion.div>
 
         {/* Complaint Section */}
-        <div className="mt-16">
+        <motion.div
+          ref={complaintRef}
+          initial={{ opacity: 0, x: 50 }}
+          animate={complaintInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-16"
+        >
           <ComplaintPost />
-        </div>
+        </motion.div>
       </div>
 
       {/* Footer */}
