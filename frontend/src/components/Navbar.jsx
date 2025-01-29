@@ -62,22 +62,34 @@ const Navbar = () => {
             <div className="relative" ref={dropdownRef}>
               <div className="flex items-center space-x-6">
                 <Link
+                  to="/emergency"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
+                >
+                  Emergency
+                </Link>
+                <Link
                   to="/forum"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Post a Forum
+                  Post Forum
                 </Link>
                 <Link
                   to="/training"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Post Training Module
+                  Post Module
                 </Link>
                 <Link
                   to="/complaints"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
-                  Regiter a Complaint
+                  Report Incident
+                </Link>
+                <Link
+                  to="/contact"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
+                >
+                  Contact Us
                 </Link>
 
                 {/* User Icon */}

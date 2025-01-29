@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import moment from "moment";
 import Navbar from "../components/Navbar";
 
@@ -106,11 +106,11 @@ const Forum = () => {
   return (
     <div>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gradient-to-r from-gray-50 via-blue-50 to-gray-100">
         {/* Flex Container */}
-        <div className="flex justify-between gap-12">
+        <div className="flex justify-between gap-8">
           {/* Left Side: Previous Forums */}
-          <div className="w-1/2 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div className="w-1/2 bg-white p-8 mt-8 rounded-2xl shadow-lg border border-gray-100">
             <h2 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-4">
               Your Last Forums
             </h2>
@@ -144,17 +144,17 @@ const Forum = () => {
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleEdit(post)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                          className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200"
                           title="Edit Post"
                         >
-                          <FaEdit size={20} />
+                          <FiEdit2 size={20} />
                         </button>
                         <button
                           onClick={() => handleDelete(post._id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                          className="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200"
                           title="Delete Post"
                         >
-                          <FaTrash size={20} />
+                          <FiTrash2 size={20} />
                         </button>
                       </div>
                     </div>
@@ -168,7 +168,7 @@ const Forum = () => {
           </div>
 
           {/* Right Side: Post a Forum */}
-          <div className="w-1/2 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div className="w-1/2 bg-white p-8 mt-8 rounded-2xl shadow-lg border border-gray-100">
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-4">
                 Post a Forum
