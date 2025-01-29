@@ -23,7 +23,7 @@ const Home = () => {
   const mapInView = useInView(mapRef, { triggerOnce: false, margin: "-100px" });
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#f9f8f6] via-[#f1f8ff] to-[#e8f8f5]">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
       <div className="container mx-auto px-6 py-8 flex-1">
         {/* Welcome Section */}
@@ -31,7 +31,7 @@ const Home = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="bg-gradient-to-r from-[#fff9f0] via-[#ffedcc] to-[#ffd699] p-10 rounded-3xl shadow-2xl relative overflow-hidden"
+          className="bg-gradient-to-r from-[#fff7eb] via-[#ffedcc] to-[#ffd699] p-10 rounded-2xl shadow-lg relative overflow-hidden"
         >
           <div className="absolute -top-10 -left-10 w-44 h-44 bg-[#ffe3b3] rounded-full blur-3xl opacity-50"></div>
           <div className="absolute bottom-0 right-0 w-44 h-44 bg-[#fcd49b] rounded-full blur-3xl opacity-50"></div>

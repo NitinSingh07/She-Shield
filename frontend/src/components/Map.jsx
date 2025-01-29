@@ -9,7 +9,17 @@ import {
   UserGroupIcon,
   DocumentDuplicateIcon,
   ChatBubbleBottomCenterTextIcon,
+  CheckCircleIcon,
 } from "@heroicons/react/24/solid";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
 
 // Add this state coordinates mapping at the top of the file, outside the component
 const stateCoordinates = {
@@ -42,6 +52,14 @@ const stateCoordinates = {
   uttarakhand: { lat: 30.0668, lng: 79.0193 },
   "west bengal": { lat: 22.9868, lng: 87.855 },
   delhi: { lat: 28.6139, lng: 77.209 },
+};
+
+// Add India's boundaries
+const INDIA_BOUNDS = {
+  north: 35.513327,
+  south: 6.4626999,
+  west: 68.1766451,
+  east: 97.395561,
 };
 
 const Map = () => {
@@ -112,17 +130,40 @@ const Map = () => {
     fetchCrimeData();
   }, [userLocation]);
 
-  // Initialize Map & Add Markers
+  // Update map initialization
   useEffect(() => {
     if (!userLocation || map) return;
 
-    const newMap = L.map("map").setView(
-      [userLocation.lat, userLocation.lng],
-      6
-    );
+    const newMap = L.map("map", {
+      minZoom: 4,
+      maxZoom: 8,
+      maxBounds: [
+        [INDIA_BOUNDS.south - 1, INDIA_BOUNDS.west - 1],
+        [INDIA_BOUNDS.north + 1, INDIA_BOUNDS.east + 1],
+      ],
+    }).setView([20.5937, 78.9629], 5); // Center of India
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
+      bounds: [
+        [INDIA_BOUNDS.south, INDIA_BOUNDS.west],
+        [INDIA_BOUNDS.north, INDIA_BOUNDS.east],
+      ],
     }).addTo(newMap);
+
+    // Add India outline
+    fetch("/india.geojson") // You'll need to add this file to your public folder
+      .then((response) => response.json())
+      .then((data) => {
+        L.geoJSON(data, {
+          style: {
+            color: "#ff6b6b",
+            weight: 2,
+            fillColor: "#ffe8e8",
+            fillOpacity: 0.1,
+          },
+        }).addTo(newMap);
+      });
 
     setMap(newMap);
   }, [userLocation]);
@@ -151,8 +192,8 @@ const Map = () => {
     // Add Cyber Crime Data Markers with detailed information
     cyberCrimesData.forEach((record) => {
       const popupContent = `
-        <div class="p-4 max-w-sm">
-          <h3 class="text-lg font-bold text-gray-800 mb-3">${record.state_ut}</h3>
+        <div class="p-4 max-w-sm bg-white rounded-lg shadow-lg">
+          <h3 class="text-lg font-bold text-gray-800 mb-3 border-b pb-2">${record.state_ut}</h3>
           <div class="space-y-2">
             <div class="flex justify-between items-center">
               <span class="text-sm text-gray-600">Cyber Blackmailing:</span>
@@ -178,7 +219,7 @@ const Map = () => {
               <span class="text-sm text-gray-600">Other Crimes:</span>
               <span class="font-semibold text-green-600">${record.other_crimes_against_women}</span>
             </div>
-            <div class="flex justify-between items-center pt-2 border-t mt-2">
+            <div class="flex justify-between items-center pt-2 border-t mt-2 bg-blue-50 p-2 rounded-lg">
               <span class="text-sm font-bold text-gray-700">Total Crimes:</span>
               <span class="font-bold text-blue-600">${record.total_cyber_crimes_against_women}</span>
             </div>
@@ -186,215 +227,334 @@ const Map = () => {
         </div>
       `;
 
-      L.marker([record.latitude, record.longitude])
-        .addTo(newMarkersLayer)
-        .bindPopup(popupContent);
+    //   L.marker([record.latitude, record.longitude])
+    //     .addTo(newMarkersLayer)
+    //     .bindPopup(popupContent);
     });
 
     setMarkersLayer(newMarkersLayer);
   }, [cyberCrimesData, map]);
 
+  // Add this function to prepare complete chart data
+  const prepareChartData = (data) => {
+    if (!data.length) return [];
+    return [
+      {
+        name: "Blackmailing",
+        value:
+          data[0]
+            .cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_,
+        color: "#ef4444",
+      },
+      {
+        name: "Stalking",
+        value:
+          data[0]
+            .cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_,
+        color: "#8b5cf6",
+      },
+      {
+        name: "Pornography",
+        value:
+          data[0]
+            .cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_,
+        color: "#ec4899",
+      },
+      {
+        name: "Fake Profile",
+        value: data[0].fake_profile__it_act_r_w_ipc_sll_,
+        color: "#f97316",
+      },
+      {
+        name: "Defamation",
+        value:
+          data[0]
+            .defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_,
+        color: "#6366f1",
+      },
+      {
+        name: "Other Crimes",
+        value: data[0].other_crimes_against_women,
+        color: "#22c55e",
+      },
+    ];
+  };
+
   return (
-    <div className="App bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen p-6">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center justify-center gap-2">
-        <ShieldExclamationIcon className="h-8 w-8 text-red-500" />
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-purple-600">
-          Cyber Crimes against Women in our Country
-        </span>
-      </h2>
+    <div className="flex h-screen bg-gray-50 rounded-3xl">
+      {/* Left Side - Map */}
+      <div className="w-1/2 h-screen p-4">
+        <div className="h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
+          <div id="map" className="h-full w-full"></div>
+        </div>
+      </div>
 
-      {/* Map Display */}
-      <div
-        id="map"
-        className="rounded-xl shadow-lg overflow-hidden"
-        style={{ height: "500px", width: "100%" }}
-      ></div>
+      {/* Right Side - Details */}
+      <div className="w-1/2 h-screen p-4">
+        <div className="h-full flex flex-col gap-4">
+          {/* Header Section - Made More Compact */}
+          <div className="bg-white rounded-2xl shadow-lg p-3">
+            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <ShieldExclamationIcon className="h-6 w-6 text-red-500" />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-purple-600">
+                Women Crime Analytics
+              </span>
+            </h2>
+            {userLocation && cyberCrimesData.length > 0 && (
+              <div className="mt-1 p-1.5 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl">
+                <p className="text-xs font-medium text-blue-800 flex items-center gap-1">
+                  <MapPinIcon className="h-3 w-3" />
+                  Your Current Location : {cyberCrimesData[0].state_ut} (
+                  {userLocation.lat} , {userLocation.lng})
+                </p>
+              </div>
 
-      {/* Info Panel */}
-      <div className="info-panel mt-6 rounded-xl bg-white shadow-lg p-6">
-        {error ? (
-          <p className="text-red-500 flex items-center gap-2">
-            <ExclamationTriangleIcon className="h-5 w-5" />
-            {error}
-          </p>
-        ) : !userLocation ? (
-          <p className="text-gray-700 animate-pulse flex items-center gap-2">
-            <MapPinIcon className="h-5 w-5" />
-            Loading location...
-          </p>
-        ) : (
-          <div>
+            )}
+          </div>
+
+          {/* Stats Grid - More Compact Layout */}
+          <div className="grid grid-cols-3 gap-3 flex-none">
             {cyberCrimesData.length > 0 && (
-              <div className="crime-statistics">
-                <div className="mb-6 border-b pb-4">
-                  <h3 className="text-2xl font-semibold mb-2 flex items-center gap-2">
-                    <UserIcon className="h-6 w-6 text-blue-500" />
-                    You are in {cyberCrimesData[0].state_ut}
-                  </h3>
-                  <p className="text-gray-600 flex items-center gap-2">
-                    <MapPinIcon className="h-5 w-5 text-gray-400" />
-                    Coordinates: {userLocation.lat.toFixed(4)},{" "}
-                    {userLocation.lng.toFixed(4)}
+              <>
+                {/* Total Cases Card - Spans Full Width */}
+                <div className="col-span-3 p-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white flex justify-between items-center">
+                  <h3 className="text-sm font-semibold">Total Cyber Crimes</h3>
+                  <p className="text-2xl font-bold">
+                    {cyberCrimesData[0].total_cyber_crimes_against_women}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-red-50 to-red-100 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Cyber Blackmailing
-                      </h4>
-                    </div>
-                    <p className="text-2xl font-bold text-red-600">
-                      {
-                        cyberCrimesData[0]
-                          .cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_
-                      }
-                    </p>
-                  </div>
+                {/* Make stat cards span 1/3 width each */}
+                <CompactStatCard
+                  title="Cyber Blackmailing"
+                  value={
+                    cyberCrimesData[0]
+                      .cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_
+                  }
+                  icon={<ExclamationTriangleIcon className="h-4 w-4" />}
+                  gradient="from-red-100 to-red-200"
+                  textColor="text-red-700"
+                />
 
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <UserGroupIcon className="h-5 w-5 text-purple-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Cyber Stalking
-                      </h4>
-                    </div>
-                    <p className="text-2xl font-bold text-purple-600">
-                      {
-                        cyberCrimesData[0]
-                          .cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_
-                      }
-                    </p>
-                  </div>
+                <CompactStatCard
+                  title="Cyber Stalking"
+                  value={
+                    cyberCrimesData[0]
+                      .cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_
+                  }
+                  icon={<UserGroupIcon className="h-4 w-4" />}
+                  gradient="from-purple-100 to-purple-200"
+                  textColor="text-purple-700"
+                />
 
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <DocumentDuplicateIcon className="h-5 w-5 text-orange-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Fake Profiles
-                      </h4>
-                    </div>
-                    <p className="text-2xl font-bold text-orange-600">
-                      {cyberCrimesData[0].fake_profile__it_act_r_w_ipc_sll_}
-                    </p>
-                  </div>
+                <CompactStatCard
+                  title="Cyber Pornography"
+                  value={
+                    cyberCrimesData[0]
+                      .cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_
+                  }
+                  icon={<ExclamationTriangleIcon className="h-4 w-4" />}
+                  gradient="from-pink-100 to-pink-200"
+                  textColor="text-pink-700"
+                />
 
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-pink-50 to-pink-100 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <ExclamationTriangleIcon className="h-5 w-5 text-pink-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Cyber Pornography
-                      </h4>
-                    </div>
-                    <p className="text-2xl font-bold text-pink-600">
-                      {
-                        cyberCrimesData[0]
-                          .cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_
-                      }
-                    </p>
-                  </div>
+                <CompactStatCard
+                  title="Defamation"
+                  value={
+                    cyberCrimesData[0]
+                      .defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_
+                  }
+                  icon={<DocumentDuplicateIcon className="h-4 w-4" />}
+                  gradient="from-indigo-100 to-indigo-200"
+                  textColor="text-indigo-700"
+                />
 
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <UserIcon className="h-5 w-5 text-indigo-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Defamation/Morphing
-                      </h4>
-                    </div>
-                    <p className="text-2xl font-bold text-indigo-600">
-                      {
-                        cyberCrimesData[0]
-                          .defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_
-                      }
-                    </p>
-                  </div>
+                <CompactStatCard
+                  title="Fake Profiles"
+                  value={cyberCrimesData[0].fake_profile__it_act_r_w_ipc_sll_}
+                  icon={<UserIcon className="h-4 w-4" />}
+                  gradient="from-orange-100 to-orange-200"
+                  textColor="text-orange-700"
+                />
 
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-green-50 to-green-100 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <ExclamationTriangleIcon className="h-5 w-5 text-green-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Other Crimes
-                      </h4>
-                    </div>
-                    <p className="text-2xl font-bold text-green-600">
-                      {cyberCrimesData[0].other_crimes_against_women}
-                    </p>
-                  </div>
-
-                  <div className="stat-card p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 col-span-full hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <ChatBubbleBottomCenterTextIcon className="h-5 w-5 text-blue-500" />
-                      <h4 className="font-medium text-gray-800">
-                        Total Cyber Crimes
-                      </h4>
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-3xl font-bold text-blue-600">
-                        {cyberCrimesData[0].total_cyber_crimes_against_women}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Total reported cases in {cyberCrimesData[0].state_ut}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <CompactStatCard
+                  title="Other Crimes"
+                  value={cyberCrimesData[0].other_crimes_against_women}
+                  icon={<ExclamationTriangleIcon className="h-4 w-4" />}
+                  gradient="from-green-100 to-green-200"
+                  textColor="text-green-700"
+                />
+              </>
             )}
           </div>
-        )}
-      </div>
 
-      {/* Data Table */}
-      <div className="data-panel mt-6 bg-white rounded-xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-          <DocumentDuplicateIcon className="h-6 w-6 text-gray-600" />
-          Cyber Crime Data
-        </h2>
-        {cyberCrimesData.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gradient-to-r from-gray-50 to-gray-100">
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    State
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Total Crimes
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Coordinates
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {cyberCrimesData.map((record, index) => (
-                  <tr
-                    key={index}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-800">
-                      {record.state_ut}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-blue-600 font-semibold">
-                      {record.total_cyber_crimes_against_women}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                      {record.latitude.toFixed(4)},{" "}
-                      {record.longitude.toFixed(4)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500 italic">No data available</p>
-        )}
+          {/* Chart Section - Fills Remaining Space */}
+          {cyberCrimesData.length > 0 && (
+            <div className="flex-1 bg-white rounded-xl shadow-lg relative overflow-hidden group">
+              {/* Decorative Elements */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"></div>
+              <div className="absolute -right-10 -top-10 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-20"></div>
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
+
+              <div className="relative z-10 p-6 h-full flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+                      Crime Distribution Analysis
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      State-wise breakdown of cyber crimes
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    {["Day", "Week", "Month", "Year"].map((period) => (
+                      <button
+                        key={period}
+                        className="px-3 py-1 text-xs font-medium rounded-full 
+                                 bg-gray-100 text-gray-600 hover:bg-purple-100 
+                                 hover:text-purple-600 transition-colors"
+                      >
+                        {period}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex-1 relative min-h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={prepareChartData(cyberCrimesData)}
+                      layout="vertical"
+                      margin={{ top: 20, right: 30, left: 90, bottom: 20 }}
+                    >
+                      <defs>
+                        {prepareChartData(cyberCrimesData).map(
+                          (entry, index) => (
+                            <linearGradient
+                              key={`gradient-${index}`}
+                              id={`barGradient-${index}`}
+                              x1="0"
+                              y1="0"
+                              x2="1"
+                              y2="0"
+                            >
+                              <stop
+                                offset="0%"
+                                stopColor={entry.color}
+                                stopOpacity={0.8}
+                              />
+                              <stop
+                                offset="100%"
+                                stopColor={entry.color}
+                                stopOpacity={0.4}
+                              />
+                            </linearGradient>
+                          )
+                        )}
+                      </defs>
+
+                      <XAxis
+                        type="number"
+                        stroke="#94a3b8"
+                        strokeWidth={0.5}
+                        style={{
+                          fontSize: "12px",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        type="category"
+                        dataKey="name"
+                        width={85}
+                        stroke="#94a3b8"
+                        strokeWidth={0.5}
+                        style={{
+                          fontSize: "12px",
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: "500",
+                        }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        cursor={{ fill: "rgba(224, 231, 255, 0.2)" }}
+                        contentStyle={{
+                          backgroundColor: "rgba(255, 255, 255, 0.97)",
+                          borderRadius: "12px",
+                          border: "none",
+                          boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                          padding: "12px",
+                        }}
+                        labelStyle={{ color: "#374151", fontWeight: 600 }}
+                      />
+                      <Bar
+                        dataKey="value"
+                        radius={[6, 6, 6, 6]}
+                        barSize={24}
+                        animationDuration={1500}
+                      >
+                        {prepareChartData(cyberCrimesData).map(
+                          (entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={`url(#barGradient-${index})`}
+                              className="transition-all duration-300 hover:brightness-110 hover:scale-x-105 origin-left"
+                              style={{
+                                filter:
+                                  "drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.1))",
+                              }}
+                            />
+                          )
+                        )}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Legend */}
+                <div className="mt-6 grid grid-cols-3 gap-4">
+                  {prepareChartData(cyberCrimesData).map((entry, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: entry.color }}
+                      ></div>
+                      <span className="text-xs text-gray-600 font-medium">
+                        {entry.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
+
+// Update CompactStatCard for more compact design
+const CompactStatCard = ({ title, value, icon, gradient, textColor }) => (
+  <div
+    className={`p-2.5 rounded-xl bg-gradient-to-r ${gradient} hover:scale-[1.02] transition-transform duration-300`}
+  >
+    <div className="flex items-center gap-1.5 mb-1">
+      <div className={textColor}>{icon}</div>
+      <h4 className="text-xs font-medium text-gray-800">{title}</h4>
+    </div>
+    <p className={`text-lg font-bold ${textColor}`}>{value}</p>
+  </div>
+);
+
+// Tip Component
+const Tip = ({ icon, text }) => (
+  <div className="flex items-center gap-1 bg-white/50 rounded-full px-3 py-1">
+    <span className="text-green-600">{icon}</span>
+    <span className="text-xs text-green-800">{text}</span>
+  </div>
+);
 
 export default Map;
