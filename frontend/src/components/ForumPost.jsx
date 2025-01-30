@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
-
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 const ForumPost = () => {
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -16,41 +18,50 @@ const ForumPost = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-6 py-8">
-      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide">
-        Latest News or Forums
+    <div className="container mx-auto relative overflow-hidden p-6">
+      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide relative inline-block before:absolute before:w-16 before:h-2 before:bg-[#ff7e5f] before:bottom-0 before:left-1/2 before:-translate-x-1/2">
+        Latest Forums
       </h2>
       {posts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <div
-              key={post._id}
-              className="relative bg-gradient-to-tr from-[#e8f8f5] to-[#d8f8e7] p-6 rounded-xl shadow-lg  border border-[#b2dfdb]"
-            >
-              {/* User Info */}
-              <div className="absolute top-0 left-0 bg-gradient-to-r from-[#ff7e5f] to-[#feb47b] text-white text-sm px-4 py-2 rounded-tr-3xl rounded-bl-3xl shadow-md transform translate-x-4 -translate-y-4">
-                <FaUser className="inline-block mr-2" />
-                {post.userId.username}
+        <div className="relative w-full overflow-hidden py-4 px-2">
+          <motion.div
+            className="flex space-x-4"
+            animate={{ x: ["100%", "-100%"] }}
+            transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+          >
+            {posts.concat(posts).map((post, index) => (
+              <div
+                key={index}
+                className="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg w-80 flex-shrink-0"
+              >
+                <div className="flex items-center gap-2 text-gray-700 text-sm font-medium">
+                  <div className="w-10 h-10 bg-gradient-to-r from-[#ff7e5f] to-[#feb47b] text-white flex justify-center items-center rounded-full shadow-md">
+                    <FaUser />
+                  </div>
+                  {post.userId.username}
+                </div>
+                <h3 className="text-xl font-semibold text-[#2c3e50] mt-2">
+                  {post.title}
+                </h3>
+                <p className="text-gray-600 text-sm line-clamp-3 border-l-4 border-[#ff7e5f] pl-3 mt-2">
+                  {post.content}
+                </p>
               </div>
-
-              {/* Title */}
-              <h3 className="text-2xl font-semibold text-[#2c3e50] mb-4">
-                {post.title}
-              </h3>
-
-              {/* Content */}
-              <p className="text-gray-700 text-base line-clamp-3 mb-6">
-                {post.content}
-              </p>
-            </div>
-          ))}
+            ))}
+          </motion.div>
+          <button
+            onClick={() => navigate("/forum")}
+            className="bg-gradient-to-r from-[#e67e22] to-[#f39c12] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6 mx-auto block"
+          >
+            Post Your Forum
+          </button>
         </div>
       ) : (
-        <div className="text-center mt-10">
+        <div className="text-center mt-12">
           <p className="text-[#7f8c8d] italic text-lg mb-4">
-            No posts available. Be the first to contribute!
+            No trending threads. Start one now!
           </p>
-          <div className="text-6xl">📭</div>
+          <div className="text-6xl animate-bounce">📭</div>
         </div>
       )}
     </div>
