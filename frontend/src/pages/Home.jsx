@@ -6,12 +6,14 @@ import Map from "../components/Map";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
   const forumRef = useRef(null);
   const complaintRef = useRef(null);
   const mapRef = useRef(null);
+  const navigate = useNavigate();
 
   const forumInView = useInView(forumRef, {
     triggerOnce: false,
@@ -103,7 +105,9 @@ const Home = () => {
                 transition={{ delay: 0.9 }}
                 className="flex gap-4"
               >
-                <button className="bg-gradient-to-r from-[#e67e22] to-[#f39c12] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                <button
+                  onClick={() => navigate("/complaints")}
+                  className="bg-gradient-to-r from-[#e67e22] to-[#f39c12] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                   Report Incident
                 </button>
                 <button className="bg-white text-[#e67e22] border-2 border-[#e67e22] px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">

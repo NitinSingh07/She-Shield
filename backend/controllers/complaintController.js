@@ -119,12 +119,12 @@ exports.getComplaints = async (req, res) => {
 
 exports.getAllComplaints = async (req, res) => {
   try {
-    console.log('Fetching all complaints...');
+    // console.log('Fetching all complaints...');
     const complaints = await Complaint.find()
       .populate('userId', ['name', 'username', 'email']) // Populate more user fields
       .sort({ createdAt: -1 });
     
-    console.log('Complaints with user details:', complaints); // Debug log
+    // console.log('Complaints with user details:', complaints); // Debug log
     return res.status(200).json(complaints);
   } catch (error) {
     console.error('Error in getAllComplaints:', error);
