@@ -18,8 +18,8 @@ const ForumPost = () => {
   }, []);
 
   return (
-    <div className="container mx-auto relative overflow-hidden p-6">
-      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide relative inline-block before:absolute before:w-16 before:h-2 before:bg-[#ff7e5f] before:bottom-0 before:left-1/2 before:-translate-x-1/2">
+    <div className="container mx-auto relative overflow-hidden p-4">
+      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-5 tracking-wide relative inline-block before:absolute before:w-16 before:h-2 before:bg-[#ff7e5f] before:bottom-0 before:left-1/2 before:-translate-x-1/2">
         Latest Forums
       </h2>
       {posts.length > 0 ? (
