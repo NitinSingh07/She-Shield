@@ -34,7 +34,7 @@ const ComplaintPost = () => {
   }, []);
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-br from-[#fde7cd] to-[#f0d8bd]">
+    <div className="p-8 mt-6 rounded-3xl min-h-screen bg-gradient-to-br from-[#f8dcbc] to-[#f2d9bc]">
       <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide">
         User Complaints
       </h2>
@@ -51,7 +51,7 @@ const ComplaintPost = () => {
           {complaints.map((complaint) => (
             <div
               key={complaint._id}
-              className="relative bg-white/90 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="relative bg-white/90 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl "
             >
               {/* Floating User Badge */}
               <div className="absolute top-0 left-0 bg-[#093208] text-white text-xs px-4 py-2 rounded-full flex items-center shadow-lg">
