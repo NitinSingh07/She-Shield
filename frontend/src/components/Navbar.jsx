@@ -32,13 +32,14 @@ const Navbar = () => {
 
   return (
     <nav className="bg-[#fcb057] shadow-lg">
-      <div className="container mx-auto flex justify-between items-center p-5">
+      <div className="container mx-auto flex justify-between items-center p-3">
         {/* Logo */}
         <Link
           to="/"
           className="text-2xl font-bold text-white hover:text-gray-200 transition duration-300"
         >
-          She-Shield
+          <img className="w-40 h-13"
+            src="/logo.png" alt="" />
         </Link>
 
         {/* Menu */}
@@ -98,9 +99,9 @@ const Navbar = () => {
                   className="focus:outline-none relative group"
                 >
                   <img
-                    src="https://via.placeholder.com/40"
+                    src="/user.png"
                     alt="User"
-                    className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+                    className="w-11 h-10 rounded-full border-2 border-white shadow-md"
                   />
                   <span className="absolute top-0 right-0 w-3 h-3 bg-[#e74c3c] rounded-full border-2 border-white"></span>
                 </button>

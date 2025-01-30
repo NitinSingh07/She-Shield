@@ -6,9 +6,7 @@ import Map from "../components/Map";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { FaShieldAlt, FaUsers, FaHandHoldingHeart } from "react-icons/fa";
-import { MdSecurity, MdEmergency } from "react-icons/md";
-import { GiCctvCamera } from "react-icons/gi";
+
 
 const Home = () => {
   const forumRef = useRef(null);
