@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs");
 
 // Ensure uploads directory exists
-const uploadDir = path.join(__dirname, "../../uploads");
+const uploadDir = path.join(__dirname, "../..", "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -33,10 +33,15 @@ exports.createComplaint = async (req, res) => {
       photo,
     });
 
-    await complaint.save();
-    res
-      .status(201)
-      .json({ message: "Complaint created successfully", complaint });
+    const savedComplaint = await complaint.save();
+    // Populate user details before sending response
+    const populatedComplaint = await Complaint.findById(savedComplaint._id)
+      .populate('userId', ['name', 'username', 'email']);
+
+    res.status(201).json({ 
+      message: "Complaint created successfully", 
+      complaint: populatedComplaint 
+    });
   } catch (error) {
     console.error("Error creating complaint:", error);
     res.status(500).json({ message: "Server error", error: error.message });

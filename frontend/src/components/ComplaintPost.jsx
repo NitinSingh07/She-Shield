@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const ComplaintPost = () => {
   const [complaints, setComplaints] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -45,14 +47,14 @@ const ComplaintPost = () => {
           <div className="text-6xl animate-bounce">📬</div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {complaints.map((complaint) => (
             <div
               key={complaint._id}
               className="relative bg-white/90 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
               {/* Floating User Badge */}
-              <div className="absolute top-0 left-0 bg-[#093208] text-white text-xs px-4 py-2 rounded-full flex items-center shadow-lg transform translate-x-4 -translate-y-4">
+              <div className="absolute top-0 left-0 bg-[#093208] text-white text-xs px-4 py-2 rounded-full flex items-center shadow-lg">
                 <div className="w-8 h-8 rounded-full bg-white text-[#ff6f61] flex items-center justify-center mr-3">
                   <FaUser className="text-lg" />
                 </div>
@@ -70,16 +72,18 @@ const ComplaintPost = () => {
                     complaint.photo
                   }`}
                   alt="Complaint"
-                  className="mt-6 rounded-xl shadow-lg object-cover max-h-56 w-full"
+                  className="mt-10 rounded-xl shadow-lg object-cover max-h-full w-full"
+                  onError={(e) => {
+                    console.error("Image failed to load:", e);
+                    e.target.style.display = "none";
+                  }}
                 />
               )}
 
               {/* Complaint Description */}
-              <p className="text-lg text-[#34495e] mt-6 line-clamp-4">
+              <p className="text-lg text-[#34495e] mt-2 line-clamp-4">
                 {complaint.description}
               </p>
-
-           
 
               {/* Date */}
               <div className="text-sm text-[#7f8c8d] mt-2">
@@ -90,6 +94,12 @@ const ComplaintPost = () => {
           ))}
         </div>
       )}
+      <button
+        onClick={() => navigate("/complaints")}
+        className="bg-[#093208] items-start justify-start  text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6 "
+      >
+        Add a Complaint
+      </button>
     </div>
   );
 };

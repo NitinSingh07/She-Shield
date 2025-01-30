@@ -51,9 +51,9 @@ const ForumPost = () => {
           </motion.div>
           <button
             onClick={() => navigate("/forum")}
-            className="bg-gradient-to-r from-[#e67e22] to-[#f39c12] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6 mx-auto block"
+            className="bg-gradient-to-r items-start justify-start from-[#e67e22] to-[#f39c12] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6 "
           >
-            Post Your Forum
+            Post a Forum
           </button>
         </div>
       ) : (
