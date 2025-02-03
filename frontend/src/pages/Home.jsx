@@ -119,8 +119,8 @@ const Home = () => {
             {/* Right Content - Hero Images with Creative Layout */}
             <div className="hidden lg:block relative h-full">
               <motion.div
-                initial={{ opacity: 0, x: 30, rotate: -5 }}
-                animate={{ opacity: 1, x: 0, rotate: -5 }}
+                initial={{ opacity: 0, x: 30, rotate: -10 }}
+                animate={{ opacity: 1, x: -50, rotate: -15 }}
                 transition={{ delay: 0.4 }}
                 className="absolute top-4 right-4 w-[80%] transform hover:scale-105 hover:rotate-0 transition-all duration-300"
               >
@@ -138,7 +138,7 @@ const Home = () => {
                 className="absolute top-20 left-4 w-[80%] transform hover:scale-105 hover:rotate-0 transition-all duration-300"
               >
                 <img
-                  src="/images/women-empowerment.png"
+                  src="/hero3.jpg"
                   alt="Women Empowerment"
                   className="w-full h-auto object-cover rounded-2xl shadow-2xl border-4 border-white/50"
                 />
@@ -151,7 +151,7 @@ const Home = () => {
                 className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-[70%] hover:scale-105 transition-all duration-300"
               >
                 <img
-                  src="/hero2.avif"
+                  src="/hero2.jpg"
                   alt="Community Support"
                   className="w-full h-auto object-cover rounded-2xl shadow-2xl border-4 border-white/50"
                 />

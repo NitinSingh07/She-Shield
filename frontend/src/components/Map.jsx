@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {
@@ -8,8 +8,7 @@ import {
   ExclamationTriangleIcon,
   UserGroupIcon,
   DocumentDuplicateIcon,
-  ChatBubbleBottomCenterTextIcon,
-  CheckCircleIcon,
+
 } from "@heroicons/react/24/solid";
 import {
   BarChart,
@@ -128,7 +127,7 @@ const Map = () => {
     };
 
     fetchCrimeData();
-  }, [userLocation]);
+  }, [userLocation, map]);
 
   // Update map initialization
   useEffect(() => {
@@ -550,11 +549,11 @@ const CompactStatCard = ({ title, value, icon, gradient, textColor }) => (
 );
 
 // Tip Component
-const Tip = ({ icon, text }) => (
-  <div className="flex items-center gap-1 bg-white/50 rounded-full px-3 py-1">
-    <span className="text-green-600">{icon}</span>
-    <span className="text-xs text-green-800">{text}</span>
-  </div>
-);
+// const Tip = ({ icon, text }) => (
+//   <div className="flex items-center gap-1 bg-white/50 rounded-full px-3 py-1">
+//     <span className="text-green-600">{icon}</span>
+//     <span className="text-xs text-green-800">{text}</span>
+//   </div>
+// );
 
 export default Map;
