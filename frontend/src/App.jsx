@@ -8,6 +8,8 @@ import Forum from "./pages/Forum";
 import Notification from "./components/Notification";
 import useAuth from "./hooks/useAuth"; // Correct import
 import Emergency from "./pages/Emergency";
+import HelpPage from "./components/HelpPage";
+
 
 const App = () => {
   const { notification } = useAuth();
@@ -23,6 +25,8 @@ const App = () => {
         <Route path="/training" element={<Training />} />
         <Route path="/forum" element={<Forum />} />
         <Route path="/emergency" element={<Emergency />} />
+        <Route path="/help" element= {<HelpPage></HelpPage>} />
+      
       </Routes>
     </Router>
   );

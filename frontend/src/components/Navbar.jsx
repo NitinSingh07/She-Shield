@@ -62,6 +62,12 @@ const Navbar = () => {
           ) : (
             <div className="relative" ref={dropdownRef}>
               <div className="flex items-center space-x-6">
+              <Link
+                  to="/help"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
+                >
+                  Help
+                </Link>
                 <Link
                   to="/emergency"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
