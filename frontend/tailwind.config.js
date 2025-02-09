@@ -22,7 +22,28 @@ export default {
           },
         },
       },
+      perspective: {
+        '1000': '1000px',
+      },
+      transformStyle: {
+        '3d': 'preserve-3d',
+      },
+      translate: {
+        'z-10': '10px',
+      },
     },
   },
-  plugins: [import("@tailwindcss/line-clamp")],
+  plugins: [
+    import("@tailwindcss/line-clamp"),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.perspective-1000': {
+          perspective: '1000px',
+        },
+        '.transform-style-3d': {
+          transformStyle: 'preserve-3d',
+        },
+      });
+    },
+  ],
 };
