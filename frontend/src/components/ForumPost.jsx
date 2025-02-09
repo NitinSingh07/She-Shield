@@ -26,12 +26,12 @@ const ForumPost = () => {
         <div className="relative w-full overflow-hidden py-4 px-2">
           <motion.div
             className="flex space-x-4"
-            animate={{ x: ["100%", "-100%"] }}
-            transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+            animate={{ x: [10, -100] }}
+            transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
           >
-            {posts.concat(posts).map((post, index) => (
+            {posts.map((post, index6) => (
               <div
-                key={index}
+                key={post._id} // Changed from index to post._id for better key management
                 className="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg w-80 flex-shrink-0"
               >
                 <div className="flex items-center gap-2 text-gray-700 text-sm font-medium">
