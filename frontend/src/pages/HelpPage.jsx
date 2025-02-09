@@ -18,32 +18,28 @@ const HelpPage = () => {
   ]);
   const [selectedFacility, setSelectedFacility] = useState(null);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-          fetchNearbyPlaces(latitude, longitude);
-        },
-        (err) => {
-          setError(err.message);
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
-  }, []);
-
   const fetchNearbyPlaces = async (latitude, longitude) => {
-    const radius = 5000;
+    // Increase radius to 10km for better coverage
+    const radius = 10000;
+
+    // Enhanced query with more specific tags and wider search
     const query = `
-      [out:json];
+      [out:json][timeout:25];
       (
-        node["amenity"="hospital"](around:${radius}, ${latitude}, ${longitude});
-        node["amenity"="police"](around:${radius}, ${latitude}, ${longitude});
+        // Hospitals and Medical Centers
+        node["amenity"="hospital"](around:${radius},${latitude},${longitude});
+        node["amenity"="clinic"](around:${radius},${latitude},${longitude});
+        node["healthcare"="hospital"](around:${radius},${latitude},${longitude});
+        node["healthcare"="centre"](around:${radius},${latitude},${longitude});
+        
+        // Police Stations and Emergency Services
+        node["amenity"="police"](around:${radius},${latitude},${longitude});
+        node["government"="police"](around:${radius},${latitude},${longitude});
+        node["office"="government"]["government"="police"](around:${radius},${latitude},${longitude});
       );
       out body;
+      >;
+      out skel qt;
     `;
 
     try {
@@ -56,22 +52,131 @@ const HelpPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch nearby places.");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
       const allPlaces = data.elements;
 
-      setHospitals(
-        allPlaces.filter((place) => place.tags.amenity === "hospital")
+      // Enhanced filtering with multiple tags
+      const hospitals = allPlaces
+        .filter(
+          (place) =>
+            place.tags &&
+            (place.tags.amenity === "hospital" ||
+              place.tags.amenity === "clinic" ||
+              place.tags.healthcare === "hospital" ||
+              place.tags.healthcare === "centre")
+        )
+        .map((hospital) => ({
+          ...hospital,
+          type: "hospital",
+          isOpen: true, // You might want to check actual opening hours
+          distance: calculateDistance(
+            latitude,
+            longitude,
+            hospital.lat,
+            hospital.lon
+          ),
+        }));
+
+      const police = allPlaces
+        .filter(
+          (place) =>
+            place.tags &&
+            (place.tags.amenity === "police" ||
+              place.tags.government === "police" ||
+              (place.tags.office === "government" &&
+                place.tags.government === "police"))
+        )
+        .map((station) => ({
+          ...station,
+          type: "police",
+          isOpen: true,
+          distance: calculateDistance(
+            latitude,
+            longitude,
+            station.lat,
+            station.lon
+          ),
+        }));
+
+      // Sort by distance
+      hospitals.sort((a, b) => a.distance - b.distance);
+      police.sort((a, b) => a.distance - b.distance);
+
+      setHospitals(hospitals);
+      setPoliceStations(police);
+
+      // Log results for debugging
+      console.log(
+        `Found ${hospitals.length} hospitals and ${police.length} police stations`
       );
-      setPoliceStations(
-        allPlaces.filter((place) => place.tags.amenity === "police")
-      );
+
+      if (hospitals.length === 0 && police.length === 0) {
+        setError(
+          "No emergency services found nearby. Trying with a larger radius..."
+        );
+        // Optionally retry with larger radius
+        if (radius <= 10000) {
+          setTimeout(
+            () => fetchNearbyPlaces(latitude, longitude, radius * 2),
+            1000
+          );
+        }
+      }
     } catch (error) {
-      setError("Failed to fetch nearby places.");
+      console.error("Fetch error:", error);
+      setError(`Failed to fetch nearby places: ${error.message}`);
+
+      // Fallback to alternative data source or cached data if available
+      // ... implement fallback logic here ...
     }
   };
+
+  // Add this new function to handle failed requests
+  const handleFetchRetry = useCallback(
+    async (latitude, longitude, retryCount = 0) => {
+      try {
+        await fetchNearbyPlaces(latitude, longitude);
+      } catch (error) {
+        if (retryCount < 3) {
+          setTimeout(
+            () => handleFetchRetry(latitude, longitude, retryCount + 1),
+            2000
+          );
+        } else {
+          setError(
+            "Unable to fetch emergency services after multiple attempts"
+          );
+        }
+      }
+    },
+    []
+  );
+
+  // Update useEffect to use the retry handler
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+          handleFetchRetry(latitude, longitude);
+        },
+        (err) => {
+          setError(err.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
+  }, [handleFetchRetry]);
 
   const handlePlaceClick = (place, event) => {
     const rect = event.target.getBoundingClientRect();
@@ -107,15 +212,17 @@ const HelpPage = () => {
       });
 
       const message = `EMERGENCY! I need help! Location: https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`;
-      
-      if ('share' in navigator) {
+
+      if ("share" in navigator) {
         await navigator.share({
-          title: 'Emergency Alert',
+          title: "Emergency Alert",
           text: message,
-          url: `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`
+          url: `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`,
         });
       } else {
-        window.location.href = `sms:${contacts.join(',')}?body=${encodeURIComponent(message)}`;
+        window.location.href = `sms:${contacts.join(
+          ","
+        )}?body=${encodeURIComponent(message)}`;
       }
     } catch (error) {
       setError("Failed to send emergency SMS");
@@ -170,7 +277,9 @@ const HelpPage = () => {
               <span className="font-medium text-red-700">Call Emergency</span>
             </button>
             <button
-              onClick={() => sendEmergencySMS(emergencyContacts.map(c => c.number))}
+              onClick={() =>
+                sendEmergencySMS(emergencyContacts.map((c) => c.number))
+              }
               className="flex items-center justify-center space-x-2 bg-blue-100 p-4 rounded-lg hover:bg-blue-200 transition-colors"
             >
               <svg
@@ -198,7 +307,10 @@ const HelpPage = () => {
             </h4>
             <div className="space-y-2">
               {emergencyContacts.map((contact) => (
-                <div key={contact.name} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+                <div
+                  key={contact.name}
+                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors"
+                >
                   <div>
                     <span className="font-medium">{contact.name}</span>
                     <p className="text-sm text-gray-500">{contact.number}</p>
@@ -208,16 +320,36 @@ const HelpPage = () => {
                       onClick={() => handleEmergencyCall(contact.number)}
                       className="p-2 text-green-600 hover:bg-green-50 rounded-full"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
                       </svg>
                     </button>
                     <button
                       onClick={() => sendEmergencySMS([contact.number])}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -402,7 +534,7 @@ const HelpPage = () => {
                           </svg>
                           Directions
                         </button>
-                        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600">
                           Call Now
                         </button>
                       </div>
@@ -411,105 +543,105 @@ const HelpPage = () => {
                 ))}
               </div>
 
-            {/* Police Stations Section - Similar professional styling */}
-            <section className="bg-white shadow-sm rounded-lg overflow-hidden">
-              <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
-                <h2 className="text-xl font-semibold text-slate-800">
-                  Law Enforcement
-                </h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  Nearby police stations
-                </p>
-              </div>
+              {/* Police Stations Section - Similar professional styling */}
+              <section className="bg-white shadow-sm rounded-lg overflow-hidden">
+                <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-slate-800">
+                    Law Enforcement
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Nearby police stations
+                  </p>
+                </div>
 
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {policeStations.map((place) => (
-                  <div
-                    key={place.id}
-                    className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                  >
-                    <div className="absolute top-4 right-4 z-10">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {calculateDistance(
-                          location.latitude,
-                          location.longitude,
-                          place.lat,
-                          place.lon
-                        )}
-                        km
-                      </span>
-                    </div>
-
-                    <div className="p-5">
-                      <div className="flex items-start">
-                        <div className="shrink-0">
-                          <svg
-                            className="w-6 h-6 text-blue-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                            />
-                          </svg>
-                        </div>
-                        <div className="ml-4">
-                          <h3 className="text-lg font-medium text-slate-900">
-                            {place.tags.name || "Unnamed Police Station"}
-                          </h3>
-                          <p className="mt-1 text-sm text-slate-500">
-                            {place.tags.amenity}
-                          </p>
-                        </div>
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {policeStations.map((place) => (
+                    <div
+                      key={place.id}
+                      className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                    >
+                      <div className="absolute top-4 right-4 z-10">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {calculateDistance(
+                            location.latitude,
+                            location.longitude,
+                            place.lat,
+                            place.lon
+                          )}
+                          km
+                        </span>
                       </div>
 
-                      <div className="mt-4 flex space-x-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const { latitude, longitude } = location;
-                            const { lat, lon } = place;
-                            window.open(
-                              `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
-                              "_blank"
-                            );
-                          }}
-                          className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                      <div className="p-5">
+                        <div className="flex items-start">
+                          <div className="shrink-0">
+                            <svg
+                              className="w-6 h-6 text-blue-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ml-4">
+                            <h3 className="text-lg font-medium text-slate-900">
+                              {place.tags.name || "Unnamed Police Station"}
+                            </h3>
+                            <p className="mt-1 text-sm text-slate-500">
+                              {place.tags.amenity}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex space-x-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const { latitude, longitude } = location;
+                              const { lat, lon } = place;
+                              window.open(
+                                `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
+                                "_blank"
+                              );
+                            }}
+                            className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          Directions
-                        </button>
-                        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          Call Now
-                        </button>
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                            Directions
+                          </button>
+                          <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Call Now
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+              </section>
             </section>
           </div>
         ) : (
