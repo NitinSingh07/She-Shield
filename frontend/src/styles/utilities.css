@@ -1,0 +1,27 @@
+@layer utilities {
+  .shadow-top {
+    box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1),
+      0 -2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .text-shadow {
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+  }
+
+  .glass-panel {
+    @apply bg-white/80 backdrop-filter backdrop-blur-lg;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:scale-[1.02];
+  }
+
+  .status-pulse {
+    @apply relative inline-flex;
+  }
+
+  .status-pulse::before {
+    content: "";
+    @apply absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping;
+  }
+}

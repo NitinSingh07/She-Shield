@@ -23,13 +23,29 @@ export default {
         },
       },
       perspective: {
-        '1000': '1000px',
+        1000: "1000px",
       },
       transformStyle: {
-        '3d': 'preserve-3d',
+        "3d": "preserve-3d",
       },
       translate: {
-        'z-10': '10px',
+        "z-10": "10px",
+      },
+      colors: {
+        emergency: {
+          50: "#fef2f2",
+          100: "#fee2e2",
+          500: "#ef4444",
+          600: "#dc2626",
+          700: "#b91c1c",
+        },
+        medical: {
+          50: "#f0f9ff",
+          100: "#e0f2fe",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+        },
       },
     },
   },
@@ -37,11 +53,11 @@ export default {
     import("@tailwindcss/line-clamp"),
     function ({ addUtilities }) {
       addUtilities({
-        '.perspective-1000': {
-          perspective: '1000px',
+        ".perspective-1000": {
+          perspective: "1000px",
         },
-        '.transform-style-3d': {
-          transformStyle: 'preserve-3d',
+        ".transform-style-3d": {
+          transformStyle: "preserve-3d",
         },
       });
     },
