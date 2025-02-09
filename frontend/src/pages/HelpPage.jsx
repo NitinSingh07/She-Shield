@@ -19,23 +19,19 @@ const HelpPage = () => {
   const [selectedFacility, setSelectedFacility] = useState(null);
 
   const fetchNearbyPlaces = async (latitude, longitude) => {
-    // Increase radius to 10km for better coverage
-    const radius = 10000;
+    const radius = 20000; // 20km radius
 
-    // Enhanced query with more specific tags and wider search
+    // Rest of the query remains same
     const query = `
       [out:json][timeout:25];
       (
-        // Hospitals and Medical Centers
-        node["amenity"="hospital"](around:${radius},${latitude},${longitude});
-        node["amenity"="clinic"](around:${radius},${latitude},${longitude});
-        node["healthcare"="hospital"](around:${radius},${latitude},${longitude});
-        node["healthcare"="centre"](around:${radius},${latitude},${longitude});
-        
-        // Police Stations and Emergency Services
         node["amenity"="police"](around:${radius},${latitude},${longitude});
-        node["government"="police"](around:${radius},${latitude},${longitude});
-        node["office"="government"]["government"="police"](around:${radius},${latitude},${longitude});
+        way["amenity"="police"](around:${radius},${latitude},${longitude});
+        node["police"](around:${radius},${latitude},${longitude});
+        way["police"](around:${radius},${latitude},${longitude});
+        
+        node["amenity"="hospital"](around:${radius},${latitude},${longitude});
+        way["amenity"="hospital"](around:${radius},${latitude},${longitude});
       );
       out body;
       >;
@@ -46,91 +42,80 @@ const HelpPage = () => {
       const response = await fetch("https://overpass-api.de/api/interpreter", {
         method: "POST",
         body: query,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
       });
 
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
 
       const data = await response.json();
-      const allPlaces = data.elements;
+      if (!data.elements) throw new Error("No data received from API");
 
-      // Enhanced filtering with multiple tags
-      const hospitals = allPlaces
-        .filter(
-          (place) =>
-            place.tags &&
-            (place.tags.amenity === "hospital" ||
-              place.tags.amenity === "clinic" ||
-              place.tags.healthcare === "hospital" ||
-              place.tags.healthcare === "centre")
-        )
-        .map((hospital) => ({
-          ...hospital,
-          type: "hospital",
-          isOpen: true, // You might want to check actual opening hours
-          distance: calculateDistance(
-            latitude,
-            longitude,
-            hospital.lat,
-            hospital.lon
-          ),
-        }));
+      // Filter and sort by distance within 20km
+      const filterByDistance = (places) => {
+        return places
+          .filter((place) => {
+            const distance = calculateDistance(
+              latitude,
+              longitude,
+              place.lat,
+              place.lon
+            );
+            return distance <= 15; // Only show places within 20km
+          })
+          .sort((a, b) => a.distance - b.distance);
+      };
 
-      const police = allPlaces
-        .filter(
-          (place) =>
-            place.tags &&
-            (place.tags.amenity === "police" ||
-              place.tags.government === "police" ||
-              (place.tags.office === "government" &&
-                place.tags.government === "police"))
-        )
-        .map((station) => ({
-          ...station,
-          type: "police",
-          isOpen: true,
-          distance: calculateDistance(
-            latitude,
-            longitude,
-            station.lat,
-            station.lon
-          ),
-        }));
+      // Process police stations
+      const police = filterByDistance(
+        data.elements
+          .filter(
+            (place) =>
+              place.tags &&
+              (place.tags.amenity === "police" || place.tags.police)
+          )
+          .map((station) => ({
+            ...station,
+            type: "police",
+            isOpen: true,
+            distance: calculateDistance(
+              latitude,
+              longitude,
+              station.lat,
+              station.lon
+            ),
+          }))
+      );
 
-      // Sort by distance
-      hospitals.sort((a, b) => a.distance - b.distance);
-      police.sort((a, b) => a.distance - b.distance);
+      // Process hospitals
+      const hospitals = filterByDistance(
+        data.elements
+          .filter((place) => place.tags && place.tags.amenity === "hospital")
+          .map((hospital) => ({
+            ...hospital,
+            type: "hospital",
+            isOpen: true,
+            distance: calculateDistance(
+              latitude,
+              longitude,
+              hospital.lat,
+              hospital.lon
+            ),
+          }))
+      );
+
+      console.log(
+        `Found ${hospitals.length} hospitals and ${police.length} police stations within 20km`
+      );
 
       setHospitals(hospitals);
       setPoliceStations(police);
 
-      // Log results for debugging
-      console.log(
-        `Found ${hospitals.length} hospitals and ${police.length} police stations`
-      );
-
-      if (hospitals.length === 0 && police.length === 0) {
-        setError(
-          "No emergency services found nearby. Trying with a larger radius..."
-        );
-        // Optionally retry with larger radius
-        if (radius <= 10000) {
-          setTimeout(
-            () => fetchNearbyPlaces(latitude, longitude, radius * 2),
-            1000
-          );
-        }
+      if (police.length === 0 && hospitals.length === 0) {
+        setError("No emergency services found within 20km of your location.");
       }
     } catch (error) {
       console.error("Fetch error:", error);
       setError(`Failed to fetch nearby places: ${error.message}`);
-
-      // Fallback to alternative data source or cached data if available
-      // ... implement fallback logic here ...
     }
   };
 
@@ -555,91 +540,100 @@ const HelpPage = () => {
                 </div>
 
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {policeStations.map((place) => (
-                    <div
-                      key={place.id}
-                      className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                    >
-                      <div className="absolute top-4 right-4 z-10">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {calculateDistance(
-                            location.latitude,
-                            location.longitude,
-                            place.lat,
-                            place.lon
-                          )}
-                          km
-                        </span>
-                      </div>
-
-                      <div className="p-5">
-                        <div className="flex items-start">
-                          <div className="shrink-0">
-                            <svg
-                              className="w-6 h-6 text-blue-600"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                              />
-                            </svg>
-                          </div>
-                          <div className="ml-4">
-                            <h3 className="text-lg font-medium text-slate-900">
-                              {place.tags.name || "Unnamed Police Station"}
-                            </h3>
-                            <p className="mt-1 text-sm text-slate-500">
-                              {place.tags.amenity}
-                            </p>
-                          </div>
+                  {policeStations.length > 0 ? (
+                    policeStations.map((place) => (
+                      <div
+                        key={place.id}
+                        className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                      >
+                        <div className="absolute top-4 right-4 z-10">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {calculateDistance(
+                              location.latitude,
+                              location.longitude,
+                              place.lat,
+                              place.lon
+                            )}
+                            km
+                          </span>
                         </div>
 
-                        <div className="mt-4 flex space-x-3">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const { latitude, longitude } = location;
-                              const { lat, lon } = place;
-                              window.open(
-                                `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
-                                "_blank"
-                              );
-                            }}
-                            className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                          >
-                            <svg
-                              className="w-4 h-4 mr-2"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                        <div className="p-5">
+                          <div className="flex items-start">
+                            <div className="shrink-0">
+                              <svg
+                                className="w-6 h-6 text-blue-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                />
+                              </svg>
+                            </div>
+                            <div className="ml-4">
+                              <h3 className="text-lg font-medium text-slate-900">
+                                {place.tags.name || "Unnamed Police Station"}
+                              </h3>
+                              <p className="mt-1 text-sm text-slate-500">
+                                {place.tags.amenity}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 flex space-x-3">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const { latitude, longitude } = location;
+                                const { lat, lon } = place;
+                                window.open(
+                                  `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
+                                  "_blank"
+                                );
+                              }}
+                              className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                            </svg>
-                            Directions
-                          </button>
-                          <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Call Now
-                          </button>
+                              <svg
+                                className="w-4 h-4 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                              </svg>
+                              Directions
+                            </button>
+                            <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                              Call Now
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full p-8 text-center">
+                      <p className="text-gray-500">
+                        Searching for nearby police stations... If none appear,
+                        try refreshing the page.
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </section>
             </section>
