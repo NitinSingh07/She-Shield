@@ -9,25 +9,34 @@ import Notification from "./components/Notification";
 import useAuth from "./hooks/useAuth"; // Correct import
 import Emergency from "./pages/Emergency";
 import HelpPage from "./pages/HelpPage";
-
+import { SocketProvider } from "./context/SocketContext";
+import EmergencyNotification from "./components/EmergencyNotification";
+import { AuthProvider } from "./context/AuthContext";
 
 const App = () => {
   const { notification } = useAuth();
 
   return (
     <Router>
-      <Notification message={notification.message} type={notification.type} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/complaints" element={<Complaints />} />
-        <Route path="/training" element={<Training />} />
-        <Route path="/forum" element={<Forum />} />
-        <Route path="/emergency" element={<Emergency />} />
-        <Route path="/help" element= {<HelpPage/>} />
-      
-      </Routes>
+      <AuthProvider>
+        <SocketProvider>
+          <EmergencyNotification />
+          <Notification
+            message={notification.message}
+            type={notification.type}
+          />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/training" element={<Training />} />
+            <Route path="/forum" element={<Forum />} />
+            <Route path="/emergency" element={<Emergency />} />
+            <Route path="/help" element={<HelpPage />} />
+          </Routes>
+        </SocketProvider>
+      </AuthProvider>
     </Router>
   );
 };

@@ -1,16 +1,35 @@
-const User = require("../models/User"); // Adjust based on your user model
+const User = require("../models/User");
 
-// Function to send emergency alerts to all users
 exports.sendEmergencyAlert = async (req, res) => {
   try {
     const { message, location, timestamp } = req.body;
+    const io = req.app.get("io");
+    const connectedUsers = req.app.get("connectedUsers");
 
     // Get all users from database
     const users = await User.find({});
 
-    // Sending notifications to each user
+    // Send notifications to each user
     for (const user of users) {
-      await sendNotification(user, { message, location, timestamp });
+      // Get socket ID for connected user
+      const socketId = connectedUsers.get(user._id.toString());
+
+      if (socketId) {
+        // Send real-time notification to connected user
+        io.to(socketId).emit("emergency_alert", {
+          message,
+          location,
+          timestamp,
+          type: "EMERGENCY",
+        });
+      }
+
+      // Log the notification
+      console.log(`Alert sent to user ${user._id}:`, {
+        message,
+        location,
+        timestamp,
+      });
     }
 
     res.status(200).json({
@@ -27,9 +46,3 @@ exports.sendEmergencyAlert = async (req, res) => {
     });
   }
 };
-
-// Helper function to send notifications
-async function sendNotification(user, alertData) {
-  // Implement your notification logic here
-  console.log(`Alert sent to user ${user.id}:`, alertData);
-}
