@@ -361,7 +361,7 @@ export default function EmergencySection() {
                       className="w-3 h-3 bg-white rounded-full"
                       animate={{ scale: [1, 1.5, 1] }}
                       transition={{
-                        duration: 0.6,
+                        duration: 2,
                         repeat: Infinity,
                         delay: i * 0.2,
                       }}
