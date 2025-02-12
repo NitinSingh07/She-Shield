@@ -210,7 +210,7 @@ export default function EmergencySection() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <Navbar />
-      <div className="min-h-screen relative flex flex-col lg:flex-row items-center justify-between bg-gradient-to-br from-yellow-300 via-red-500 to-orange-500 text-gray-900 p-4 md:p-8">
+      <div className="min-h-screen  relative flex flex-col lg:flex-row items-center justify-between bg-gradient-to-br from-yellow-300 via-red-500 to-orange-500 text-gray-900 p-4 md:p-8">
         {/* Animated background circles */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(5)].map((_, i) => (
