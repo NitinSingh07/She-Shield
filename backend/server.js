@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv"); // Import dotenv
 dotenv.config(); // Load environment variables from .env file
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
 const connectDB = require("./config/db"); // Import the connectDB function
 const authRoutes = require("./routes/authRoutes");
@@ -14,6 +16,42 @@ const emergencyRoutes = require("./routes/emergencyRoutes");
 const fs = require("fs");
 const path = require("path");
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://she-shield.vercel.app", "http://localhost:5173"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Store connected users
+const connectedUsers = new Map();
+
+// Socket.IO connection handling
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  // Handle user authentication
+  socket.on("authenticate", (userId) => {
+    connectedUsers.set(userId, socket.id);
+    console.log("User authenticated:", userId);
+  });
+
+  socket.on("disconnect", () => {
+    // Remove user from connected users
+    for (const [userId, socketId] of connectedUsers.entries()) {
+      if (socketId === socket.id) {
+        connectedUsers.delete(userId);
+        break;
+      }
+    }
+  });
+});
+
+// Make io accessible to routes
+app.set("io", io);
+app.set("connectedUsers", connectedUsers);
 
 const allowedOrigins = [
   "https://she-shield.vercel.app", // Production frontend
@@ -91,7 +129,8 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Update the listen call to use httpServer instead of app
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
