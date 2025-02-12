@@ -12,6 +12,7 @@ import HelpPage from "./pages/HelpPage";
 import { SocketProvider } from "./context/SocketContext";
 import EmergencyNotification from "./components/EmergencyNotification";
 import { AuthProvider } from "./context/AuthContext";
+import ContactUs from "./pages/ContactUs";
 
 const App = () => {
   const { notification } = useAuth();
@@ -35,7 +36,6 @@ const App = () => {
             <Route path="/emergency" element={<Emergency />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/contact" element={<ContactUs />} />
-
           </Routes>
         </SocketProvider>
       </AuthProvider>
