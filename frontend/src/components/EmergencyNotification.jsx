@@ -4,12 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function EmergencyNotification() {
   const [notifications, setNotifications] = useState([]);
-  const socket = useSocket();
+  const [audio] = useState(new Audio("/alert-sound.mp3")); // Create audio instance once
+  const { socket, isEmergencySender } = useSocket();
+
+  // Pre-load the audio
+  useEffect(() => {
+    audio.load();
+  }, [audio]);
 
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("emergency_alert", (alert) => {
+    const handleEmergencyAlert = async (alert) => {
       // Add new notification
       setNotifications((prev) => [
         ...prev,
@@ -19,15 +25,30 @@ export default function EmergencyNotification() {
         },
       ]);
 
-      // Play alert sound
-      const audio = new Audio("/alert-sound.mp3"); // Add an alert sound file to your public folder
-      audio.play().catch((err) => console.log("Audio play failed:", err));
-    });
+      // Play sound for all users except sender
+      if (!isEmergencySender) {
+        try {
+          // Try to play immediately
+          await audio.play();
+        } catch (error) {
+          // If autoplay fails, try playing on next user interaction
+          const playOnInteraction = () => {
+            audio.play();
+            document.removeEventListener("click", playOnInteraction);
+          };
+          document.addEventListener("click", playOnInteraction);
+        }
+      }
+    };
+
+    socket.on("emergency_alert", handleEmergencyAlert);
 
     return () => {
-      socket.off("emergency_alert");
+      socket.off("emergency_alert", handleEmergencyAlert);
+      audio.pause();
+      audio.currentTime = 0;
     };
-  }, [socket]);
+  }, [socket, audio, isEmergencySender]);
 
   const removeNotification = (id) => {
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));

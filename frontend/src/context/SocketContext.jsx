@@ -6,11 +6,15 @@ const SocketContext = createContext();
 
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
-  const { user } = useContext(AuthContext); // Use AuthContext directly
+  const [isEmergencySender, setIsEmergencySender] = useState(false);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const newSocket = io(`${import.meta.env.VITE_BACKEND_URL}`, {
       withCredentials: true,
+      transports: ["websocket", "polling"],
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
     newSocket.on("connect", () => {
@@ -20,13 +24,27 @@ export function SocketProvider({ children }) {
       }
     });
 
+    newSocket.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
+
     setSocket(newSocket);
 
-    return () => newSocket.close();
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+      }
+    };
   }, [user]);
 
+  const value = {
+    socket,
+    isEmergencySender,
+    setIsEmergencySender,
+  };
+
   return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
   );
 }
 

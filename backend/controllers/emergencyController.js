@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 exports.sendEmergencyAlert = async (req, res) => {
   try {
-    const { message, location, timestamp } = req.body;
+    const { message, location, locationDetails, timestamp, userId } = req.body;
     const io = req.app.get("io");
     const connectedUsers = req.app.get("connectedUsers");
 
@@ -19,7 +19,9 @@ exports.sendEmergencyAlert = async (req, res) => {
         io.to(socketId).emit("emergency_alert", {
           message,
           location,
+          locationDetails,
           timestamp,
+          userId,
           type: "EMERGENCY",
         });
       }
@@ -28,7 +30,9 @@ exports.sendEmergencyAlert = async (req, res) => {
       console.log(`Alert sent to user ${user._id}:`, {
         message,
         location,
+        locationDetails,
         timestamp,
+        userId,
       });
     }
 

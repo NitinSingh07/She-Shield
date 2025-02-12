@@ -7,12 +7,15 @@ import {
 } from "@heroicons/react/24/solid";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useSocket } from "../context/SocketContext";
 
 export default function EmergencySection() {
   const [alertSent, setAlertSent] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [currentTip, setCurrentTip] = useState(0);
   const [error, setError] = useState(null);
+  const [alertDetails, setAlertDetails] = useState(null);
+  const { setIsEmergencySender } = useSocket();
 
   const images = [
     {
@@ -54,55 +57,6 @@ export default function EmergencySection() {
     };
   }, []);
 
-  const handleEmergencyClick = async () => {
-    try {
-      setAlertSent(true);
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            setTimeout(() => {
-              setAlertSent(false);
-              setCountdown(3);
-            }, 1000);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      // Use the correct backend URL
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/emergency/alert`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: "EMERGENCY ALERT: Someone needs immediate assistance!",
-            location: navigator.geolocation ? await getCurrentLocation() : null,
-            timestamp: new Date().toISOString(),
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to send emergency alert: ${response.statusText}`
-        );
-      }
-
-      const data = await response.json();
-      console.log("Alert sent successfully:", data);
-    } catch (err) {
-      console.error("Error details:", err);
-      setError("Failed to send emergency alert. Please try again.");
-      setAlertSent(false);
-    }
-  };
-
-  // Helper function to get current location
   const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -122,6 +76,114 @@ export default function EmergencySection() {
         }
       );
     });
+  };
+
+  const getLocationDetails = async (latitude, longitude) => {
+    try {
+      const response = await fetch(
+        `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${
+          import.meta.env.VITE_OPENCAGE_API_KEY
+        }`
+      );
+      const data = await response.json();
+
+      if (data.results && data.results[0]) {
+        const components = data.results[0].components;
+        return {
+          city:
+            components.city ||
+            components.town ||
+            components.village ||
+            "Unknown City",
+          state: components.state || "Unknown State",
+          formatted: data.results[0].formatted,
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error("Error getting location details:", error);
+      return null;
+    }
+  };
+
+  const handleEmergencyClick = async () => {
+    try {
+      setAlertSent(true);
+      setIsEmergencySender(true);
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setTimeout(() => {
+              setAlertSent(false);
+              setCountdown(3);
+              setIsEmergencySender(false);
+            }, 1000);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      // Get current location
+      const location = navigator.geolocation
+        ? await getCurrentLocation()
+        : null;
+
+      // Get location details if coordinates are available
+      let locationDetails = null;
+      if (location) {
+        locationDetails = await getLocationDetails(
+          location.latitude,
+          location.longitude
+        );
+        setAlertDetails({
+          city: locationDetails?.city || "Unknown City",
+          state: locationDetails?.state || "Unknown State",
+          coordinates: location
+            ? `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(
+                6
+              )}`
+            : "Not available",
+          timestamp: new Date().toLocaleTimeString(),
+        });
+      }
+
+      // Create alert message with location details
+      const alertMessage = locationDetails
+        ? `Immediate assistance needed in ${locationDetails.city}, ${locationDetails.state}!`
+        : "EMERGENCY ALERT: Someone needs immediate assistance!";
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/emergency/alert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: alertMessage,
+            location: location,
+            locationDetails: locationDetails,
+            timestamp: new Date().toISOString(),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to send emergency alert: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log("Alert sent successfully:", data);
+    } catch (err) {
+      console.error("Error details:", err);
+      setError("Failed to send emergency alert. Please try again.");
+      setAlertSent(false);
+      setIsEmergencySender(false);
+    }
   };
 
   const handleImageError = (event, fallbackSrc) => {
@@ -233,6 +295,52 @@ export default function EmergencySection() {
               <div className="absolute inset-0 animate-ping rounded-full bg-red-500/50" />
             )}
           </motion.div>
+
+          {/* Alert Details */}
+          <AnimatePresence>
+            {alertSent && alertDetails && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-xl"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">
+                      Alert Details
+                    </h3>
+                    <span className="text-sm text-white/80">
+                      {alertDetails.timestamp}
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      <p className="text-white">
+                        <span className="font-semibold">Location:</span>{" "}
+                        {alertDetails.city}, {alertDetails.state}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                      <p className="text-white">
+                        <span className="font-semibold">Coordinates:</span>{" "}
+                        {alertDetails.coordinates}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-sm text-white/80">
+                    Emergency services have been notified of your location. Stay
+                    calm and remain in a safe place.
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Status message */}
           <AnimatePresence>
