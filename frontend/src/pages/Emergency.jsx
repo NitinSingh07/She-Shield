@@ -73,7 +73,7 @@ export default function EmergencySection() {
 
       // Use the correct backend URL
       const response = await fetch(
-        "http://localhost:5000/api/emergency/alert",
+        `${import.meta.env.VITE_BACKEND_URL}/api/emergency/alert`,
         {
           method: "POST",
           headers: {
