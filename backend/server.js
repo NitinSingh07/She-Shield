@@ -19,10 +19,11 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["https://she-shield.vercel.app", "http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://she-shield.vercel.app"],
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  },
 });
 
 // Store connected users
@@ -38,7 +39,13 @@ io.on("connection", (socket) => {
     console.log("User authenticated:", userId);
   });
 
+  socket.on("emergency_alert", (alertData) => {
+    // Broadcast the alert to all connected clients except the sender
+    socket.broadcast.emit("emergency_alert", alertData);
+  });
+
   socket.on("disconnect", () => {
+    console.log("User disconnected");
     // Remove user from connected users
     for (const [userId, socketId] of connectedUsers.entries()) {
       if (socketId === socket.id) {

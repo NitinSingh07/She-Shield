@@ -34,6 +34,8 @@ const App = () => {
             <Route path="/forum" element={<Forum />} />
             <Route path="/emergency" element={<Emergency />} />
             <Route path="/help" element={<HelpPage />} />
+            <Route path="/contact" element={<ContactUs />} />
+
           </Routes>
         </SocketProvider>
       </AuthProvider>
