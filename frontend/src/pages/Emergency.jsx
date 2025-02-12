@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BellAlertIcon, ShieldCheckIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import {
+  BellAlertIcon,
+  ShieldCheckIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/solid";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -11,9 +15,21 @@ export default function EmergencySection() {
   const [error, setError] = useState(null);
 
   const images = [
-    { src: "/help.jpg", alt: "Women Safety Training", fallback: "/default1.jpg" },
-    { src: "help2.jpg", alt: "Emergency Contact Support", fallback: "/default2.jpg" },
-    { src: "help3.jpg", alt: "Emergency Help in Action", fallback: "/default3.jpg" },
+    {
+      src: "/help3.jpg",
+      alt: "Women Safety Training",
+      fallback: "/default3.jpg",
+    },
+    {
+      src: "help2.jpg",
+      alt: "Emergency Contact Support",
+      fallback: "/default2.jpg",
+    },
+    {
+      src: "help.jpg",
+      alt: "Emergency Help in Action",
+      fallback: "/default1.jpg",
+    },
     { src: "help4.jpg", alt: "Community Support", fallback: "/default4.jpg" },
   ];
 
@@ -55,13 +71,57 @@ export default function EmergencySection() {
         });
       }, 1000);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      
+      // Use the correct backend URL
+      const response = await fetch(
+        "http://localhost:5000/api/emergency/alert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: "EMERGENCY ALERT: Someone needs immediate assistance!",
+            location: navigator.geolocation ? await getCurrentLocation() : null,
+            timestamp: new Date().toISOString(),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to send emergency alert: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log("Alert sent successfully:", data);
     } catch (err) {
-      setError("Failed to send emergency alert");
+      console.error("Error details:", err);
+      setError("Failed to send emergency alert. Please try again.");
       setAlertSent(false);
     }
+  };
+
+  // Helper function to get current location
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        resolve(null);
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.warn("Error getting location:", error);
+          resolve(null);
+        }
+      );
+    });
   };
 
   const handleImageError = (event, fallbackSrc) => {
@@ -74,7 +134,7 @@ export default function EmergencySection() {
         <div className="text-center p-8">
           <ExclamationCircleIcon className="w-16 h-16 text-red-500 mx-auto" />
           <h2 className="text-2xl font-bold text-red-700 mt-4">{error}</h2>
-          <button 
+          <button
             onClick={() => setError(null)}
             className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg"
           >

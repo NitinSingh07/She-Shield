@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const complaintRoutes = require("./routes/complaintRoutes");
 const trainingRoutes = require("./routes/trainingRoutes");
 const forumRoutes = require("./routes/forumRoutes");
+const emergencyRoutes = require("./routes/emergencyRoutes");
 const fs = require("fs");
 const path = require("path");
 const app = express();
@@ -19,7 +20,20 @@ const allowedOrigins = [
   "http://localhost:5173", // Local development frontend
 ];
 
-app.use(cors());
+// Updated CORS configuration
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Database connection
@@ -63,7 +77,19 @@ app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 app.use("/api/training", trainingRoutes);
 app.use("/api/forum", forumRoutes);
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use("/api/emergency", emergencyRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
