@@ -105,7 +105,7 @@ const Complaints = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-red-50 to-orange-100 relative">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -115,20 +115,26 @@ const Complaints = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-4xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-4 
-                         flex items-center space-x-3">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+            <h2
+              className="text-4xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-4 
+                         flex items-center space-x-3"
+            >
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 via-red-500 to-orange-400">
                 Your Complaints
               </span>
             </h2>
             <div className="space-y-6">
               {complaints.length === 0 ? (
-                <motion.div 
+                <motion.div
                   className="bg-white rounded-2xl p-8 text-center shadow-md"
                   whileHover={{ scale: 1.02 }}
                 >
-                  <p className="text-lg text-gray-600">No complaints submitted yet.</p>
-                  <p className="text-gray-500 mt-2">Your complaints will appear here once submitted.</p>
+                  <p className="text-lg text-gray-600">
+                    No complaints submitted yet.
+                  </p>
+                  <p className="text-gray-500 mt-2">
+                    Your complaints will appear here once submitted.
+                  </p>
                 </motion.div>
               ) : (
                 complaints.map((complaint, index) => (
@@ -184,7 +190,9 @@ const Complaints = () => {
                         className="mt-4 rounded-lg overflow-hidden shadow-sm"
                       >
                         <img
-                          src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${complaint.photo}`}
+                          src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${
+                            complaint.photo
+                          }`}
                           alt="Complaint"
                           className="w-full h-64 object-cover hover:scale-105 transition-transform"
                         />
@@ -203,8 +211,10 @@ const Complaints = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
-              <h2 className="text-3xl font-bold mb-6 bg-clip-text text-transparent 
-                           bg-gradient-to-r from-blue-600 to-purple-600">
+              <h2
+                className="text-3xl font-bold mb-6 bg-clip-text text-transparent 
+                           bg-gradient-to-r from-yellow-500 via-red-500 to-orange-400"
+              >
                 {editingComplaintId ? "Edit Complaint" : "Submit a Complaint"}
               </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -245,12 +255,14 @@ const Complaints = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600
+                    className="flex-1 bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400
                              text-white py-3 px-6 rounded-xl font-medium
                              hover:opacity-90 transition-all duration-300
                              shadow-md hover:shadow-lg"
                   >
-                    {editingComplaintId ? "Update Complaint" : "Submit Complaint"}
+                    {editingComplaintId
+                      ? "Update Complaint"
+                      : "Submit Complaint"}
                   </motion.button>
                   {editingComplaintId && (
                     <motion.button
