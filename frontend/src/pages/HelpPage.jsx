@@ -355,29 +355,140 @@ const HelpPage = () => {
       <div className="container mx-auto px-4 py-6">
         {/* Status Dashboard */}
         <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
-            <div className="flex items-center justify-between">
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-gray-600">Nearest Hospital</p>
-                <h3 className="text-xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-indigo-600">
+                  Nearest Hospital
+                </p>
+                <h3 className="text-xl font-semibold text-gray-900 mt-1">
                   {hospitals[0]?.tags.name || "Searching..."}
                 </h3>
+
+                <div className="mt-2 space-y-2">
+                  <p className="text-sm text-gray-600 flex items-center">
+                    <span className="inline-block w-4 h-4 mr-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                        />
+                      </svg>
+                    </span>
+                    {hospitals[0]
+                      ? `${calculateDistance(
+                          location?.latitude,
+                          location?.longitude,
+                          hospitals[0].lat,
+                          hospitals[0].lon
+                        )}km away`
+                      : "Calculating..."}
+                  </p>
+
+                  <p className="text-sm text-gray-600 flex items-center">
+                    <span className="inline-block w-4 h-4 mr-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                        />
+                      </svg>
+                    </span>
+                    {hospitals[0]?.tags.address ||
+                      hospitals[0]?.tags["addr:full"] ||
+                      "Address not available"}
+                  </p>
+                </div>
+
+                <div className="mt-4 flex gap-3">
+                  <button
+                    onClick={() => {
+                      const phoneNumber =
+                        hospitals[0]?.tags.phone ||
+                        hospitals[0]?.tags["contact:phone"];
+                      if (phoneNumber) {
+                        window.location.href = `tel:${phoneNumber.replace(
+                          /\s+/g,
+                          ""
+                        )}`;
+                      }
+                    }}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-colors duration-200"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                      />
+                    </svg>
+                    Call Now
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (hospitals[0] && location) {
+                        window.open(
+                          `https://www.google.com/maps/dir/?api=1&origin=${location.latitude},${location.longitude}&destination=${hospitals[0].lat},${hospitals[0].lon}`,
+                          "_blank"
+                        );
+                      }
+                    }}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:ring-4 focus:ring-gray-300 transition-colors duration-200"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                      />
+                    </svg>
+                    Get Directions
+                  </button>
+                </div>
               </div>
+
               <span className="flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
             </div>
-            <p className="mt-2 text-sm text-gray-500">
-              {hospitals[0]
-                ? `${calculateDistance(
-                    location?.latitude,
-                    location?.longitude,
-                    hospitals[0].lat,
-                    hospitals[0].lon
-                  )}km away`
-                : "Calculating..."}
-            </p>
           </div>
 
           {/* Additional status cards... */}
@@ -430,105 +541,109 @@ const HelpPage = () => {
         {location ? (
           <div className="space-y-8">
             {/* Medical Services Section */}
-            <section className="bg-white shadow-sm rounded-lg overflow-hidden">
-              <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
-                <h2 className="text-xl font-semibold text-slate-800">
-                  Emergency Medical Services
-                </h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  Nearby hospitals and medical facilities
-                </p>
-              </div>
+            {(selectedTab === "all" || selectedTab === "hospitals") && (
+              <section className="bg-white shadow-sm rounded-lg overflow-hidden">
+                <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-slate-800">
+                    Emergency Medical Services
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Nearby hospitals and medical facilities
+                  </p>
+                </div>
 
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {hospitals.map((place) => (
-                  <div
-                    key={place.id}
-                    className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                  >
-                    <div className="absolute top-4 right-4 z-10">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                        {calculateDistance(
-                          location.latitude,
-                          location.longitude,
-                          place.lat,
-                          place.lon
-                        )}
-                        km
-                      </span>
-                    </div>
-
-                    <div className="p-5">
-                      <div className="flex items-start">
-                        <div className="shrink-0">
-                          <svg
-                            className="w-6 h-6 text-red-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                            />
-                          </svg>
-                        </div>
-                        <div className="ml-4">
-                          <h3 className="text-lg font-medium text-slate-900">
-                            {place.tags.name || "Unnamed Hospital"}
-                          </h3>
-                          <p className="mt-1 text-sm text-slate-500">
-                            {place.tags.amenity}
-                          </p>
-                        </div>
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {hospitals.map((place) => (
+                    <div
+                      key={place.id}
+                      className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                    >
+                      <div className="absolute top-1 right-1 z-10">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                          {calculateDistance(
+                            location.latitude,
+                            location.longitude,
+                            place.lat,
+                            place.lon
+                          )}
+                          km
+                        </span>
                       </div>
 
-                      <div className="mt-4 flex space-x-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const { latitude, longitude } = location;
-                            const { lat, lon } = place;
-                            window.open(
-                              `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
-                              "_blank"
-                            );
-                          }}
-                          className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                      <div className="p-5">
+                        <div className="flex items-start">
+                          <div className="shrink-0">
+                            <svg
+                              className="w-6 h-6 text-red-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ml-4">
+                            <h3 className="text-lg font-medium text-slate-900">
+                              {place.tags.name || "Unnamed Hospital"}
+                            </h3>
+                            <p className="mt-1 text-sm text-slate-500">
+                              {place.tags.amenity}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex space-x-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const { latitude, longitude } = location;
+                              const { lat, lon } = place;
+                              window.open(
+                                `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
+                                "_blank"
+                              );
+                            }}
+                            className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          Directions
-                        </button>
-                        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600">
-                          Call Now
-                        </button>
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                            Directions
+                          </button>
+                          <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600">
+                            Call Now
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-              {/* Police Stations Section - Similar professional styling */}
+            {/* Police Stations Section */}
+            {(selectedTab === "all" || selectedTab === "police") && (
               <section className="bg-white shadow-sm rounded-lg overflow-hidden">
                 <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
                   <h2 className="text-xl font-semibold text-slate-800">
@@ -636,7 +751,7 @@ const HelpPage = () => {
                   )}
                 </div>
               </section>
-            </section>
+            )}
           </div>
         ) : (
           <div className="min-h-[60vh] flex flex-col items-center justify-center">
