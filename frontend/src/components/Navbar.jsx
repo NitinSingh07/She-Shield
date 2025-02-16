@@ -73,12 +73,12 @@ const Navbar = () => {
                 >
                   Emergency
                 </Link>
-                <Link
+                {/* <Link
                   to="/forum"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
                   Post Forum
-                </Link>
+                </Link> */}
                 <Link
                   to="/training"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
@@ -90,6 +90,12 @@ const Navbar = () => {
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >
                   Report Incident
+                </Link>
+                <Link
+                  to="/about"
+                  className="text-white font-medium hover:text-gray-200 transition duration-300"
+                >
+                  About Us
                 </Link>
                 <Link
                   to="/contact"
