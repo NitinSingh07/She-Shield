@@ -99,7 +99,7 @@ const Map = () => {
 
         // Fetch cyber crime data for the detected state
         const crimeResponse = await fetch(
-          `http://localhost:5000/api/cyber-crimes?state=${state}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cyber-crimes?state=${state}`
         );
         const crimeData = await crimeResponse.json();
         console.log("Fetched Cyber Crime Data:", crimeData);

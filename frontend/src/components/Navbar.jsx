@@ -31,15 +31,14 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-[#fcb057] shadow-lg">
+    <nav className="bg-gradient-to-br from-yellow-300 via-red-500 to-orange-300 shadow-lg">
       <div className="container mx-auto flex justify-between items-center p-3">
         {/* Logo */}
         <Link
           to="/"
           className="text-2xl font-bold text-white hover:text-gray-200 transition duration-300"
         >
-          <img className="w-40 h-13"
-            src="/logo.png" alt="" />
+          <img className="w-40 h-13" src="/logo.png" alt="" />
         </Link>
 
         {/* Menu */}
@@ -62,7 +61,7 @@ const Navbar = () => {
           ) : (
             <div className="relative" ref={dropdownRef}>
               <div className="flex items-center space-x-6">
-              <Link
+                <Link
                   to="/help"
                   className="text-white font-medium hover:text-gray-200 transition duration-300"
                 >

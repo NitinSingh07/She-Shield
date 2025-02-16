@@ -107,25 +107,25 @@ const Forum = () => {
   return (
     <div>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 relative">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-red-50 to-orange-100 relative">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
-        
+
         {/* Floating Shapes */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-32 h-32 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        
+        <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-32 h-32 bg-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+
         {/* Main Content */}
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col lg:flex-row justify-between gap-8">
             {/* Left Side: Previous Forums */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="lg:w-1/2"
             >
               <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-xl border border-white/40">
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 border-b border-gray-200/50 pb-4">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400 bg-clip-text text-transparent mb-6 border-b border-gray-200/50 pb-4">
                   Posted Forums
                 </h2>
                 <div className="space-y-6">
@@ -197,7 +197,7 @@ const Forum = () => {
             >
               <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-xl border border-white/40">
                 <div className="text-center mb-8">
-                  <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6 border-b border-gray-200/50 pb-4">
+                  <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400 bg-clip-text text-transparent mb-6 border-b border-gray-200/50 pb-4">
                     Share Your Voice
                   </h2>
                 </div>
@@ -243,7 +243,7 @@ const Forum = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl hover:opacity-90 transition-all duration-300 font-medium shadow-lg"
+                      className="flex-1 bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400 text-white py-4 rounded-xl hover:opacity-90 transition-all duration-300 font-medium shadow-lg"
                     >
                       {editingPostId ? "Update Post" : "Create Post"}
                     </motion.button>
