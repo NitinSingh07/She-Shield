@@ -289,7 +289,7 @@ const Map = () => {
       </div>
 
       {/* Right Side - Details */}
-      <div className="w-1/2 h-screen p-4">
+      <div id="map" className=" w-1/2 h-screen p-4">
         <div className="h-full flex flex-col gap-4">
           {/* Header Section - Made More Compact */}
           <div className="bg-white rounded-2xl shadow-lg p-3">
