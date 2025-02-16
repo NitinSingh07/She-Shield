@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import FeatureCards from "../components/Features";
 
 
 const Home = () => {
@@ -29,10 +30,10 @@ const Home = () => {
       <Navbar />
 
       {/* Animated Background Elements */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      <div className="fixed inset-0 -z-10 overflow-hidden ">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob  sm:hidden"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000  "></div>
+        <div className="absolute bottom-0 left-0 w-96 h-40 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000  "></div>
       </div>
 
       <main className="container mx-auto px-4 py-12">
@@ -43,7 +44,7 @@ const Home = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12">
+          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12 mb-[13rem]">
             {/* Left Content */}
             <div className="space-y-6">
               <motion.div
@@ -117,7 +118,7 @@ const Home = () => {
             </div>
 
             {/* Right Content - Hero Images with Creative Layout */}
-            <div className="hidden lg:block relative h-full">
+            <div className="hidden lg:block relative h-full sm:hidden">
               <motion.div
                 initial={{ opacity: 0, x: 30, rotate: -10 }}
                 animate={{ opacity: 1, x: -50, rotate: -15 }}
@@ -148,7 +149,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-[70%] hover:scale-105 transition-all duration-300"
+                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-[60%] hover:scale-105 transition-all duration-300"
               >
                 <img
                   src="/hero2.jpg"
@@ -186,6 +187,9 @@ const Home = () => {
         >
           <Map />
         </motion.section>
+
+        {/* Feature section */}
+        <FeatureCards/>
 
         {/* Forum and Complaints Sections */}
         <motion.section
