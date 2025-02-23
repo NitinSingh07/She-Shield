@@ -1,0 +1,195 @@
+{
+  "index_name": "0ca849ee-db0f-4ecf-8884-2b11721bee65",
+  "title": "State/UTs-wise Cyber Crimes against Women during 2021",
+  "desc": "State/UTs-wise Cyber Crimes against Women during 2021",
+  "org_type": "Central",
+  "org": [
+    "Ministry of Home Affairs",
+    "Department of States",
+    "National Crime Records Bureau (NCRB)"
+  ],
+  "sector": [
+    "Police"
+  ],
+  "source": "data.gov.in",
+  "catalog_uuid": "83a258f3-6fd1-4a9a-911b-5207a0cfa136",
+  "visualizable": "1",
+  "active": "1",
+  "created": 1679241133,
+  "updated": 1679287059,
+  "created_date": "2023-03-19T16:52:13Z",
+  "updated_date": "2023-03-20T10:07:39Z",
+  "external_ws": 0,
+  "external_ws_url": "",
+  "target_bucket": {
+    "index": "api",
+    "type": "83a258f3-6fd1-4a9a-911b-5207a0cfa136",
+    "field": "0ca849ee-db0f-4ecf-8884-2b11721bee65"
+  },
+  "field": [
+    {
+      "id": "sl__no_",
+      "name": "Sl. No.",
+      "type": "keyword"
+    },
+    {
+      "id": "state_ut",
+      "name": "State/UT",
+      "type": "keyword"
+    },
+    {
+      "id": "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_",
+      "name": "Cyber Blackmailing/ Threatening (Sec.506, 503, 384 IPC r/w IT Act)",
+      "type": "double"
+    },
+    {
+      "id": "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_",
+      "name": "Cyber Pornography/ Hosting/ Publishing Obscene Sexual Materials (Sec.67A/67B(Girl Child) of IT act r/w other IPC/SLL)",
+      "type": "double"
+    },
+    {
+      "id": "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_",
+      "name": "Cyber Stalking/ Cyber Bullying of Women (Sec.354D IPC r/w IT Act)",
+      "type": "double"
+    },
+    {
+      "id": "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_",
+      "name": "Defamation/ Morphing (Sec.469 IPC r/w IPC and Indecent Rep. of Women (P) Act & IT Act)",
+      "type": "double"
+    },
+    {
+      "id": "fake_profile__it_act_r_w_ipc_sll_",
+      "name": "Fake Profile (IT Act r/w IPC/SLL)",
+      "type": "double"
+    },
+    {
+      "id": "other_crimes_against_women",
+      "name": "Other Crimes against Women",
+      "type": "double"
+    },
+    {
+      "id": "total_cyber_crimes_against_women",
+      "name": "Total Cyber Crimes against Women",
+      "type": "double"
+    }
+  ],
+  "message": "Resource lists",
+  "version": "2.2.0",
+  "status": "ok",
+  "total": 39,
+  "count": 10,
+  "limit": "10",
+  "offset": "0",
+  "records": [
+    {
+      "sl__no_": "1",
+      "state_ut": "Andhra Pradesh",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": 26,
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 43,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 101,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": 2,
+      "fake_profile__it_act_r_w_ipc_sll_": 2,
+      "other_crimes_against_women": 297,
+      "total_cyber_crimes_against_women": 471
+    },
+    {
+      "sl__no_": "2",
+      "state_ut": "Arunachal Pradesh",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": "0",
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 5,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 1,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": "0",
+      "other_crimes_against_women": 10,
+      "total_cyber_crimes_against_women": 16
+    },
+    {
+      "sl__no_": "3",
+      "state_ut": "Assam",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": 94,
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 228,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 31,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": 110,
+      "other_crimes_against_women": 393,
+      "total_cyber_crimes_against_women": 856
+    },
+    {
+      "sl__no_": "4",
+      "state_ut": "Bihar",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": "0",
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 5,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 3,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": "0",
+      "other_crimes_against_women": 48,
+      "total_cyber_crimes_against_women": 56
+    },
+    {
+      "sl__no_": "5",
+      "state_ut": "Chhattisgarh",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": "0",
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 86,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 9,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": 5,
+      "other_crimes_against_women": 94,
+      "total_cyber_crimes_against_women": 194
+    },
+    {
+      "sl__no_": "6",
+      "state_ut": "Goa",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": "0",
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 3,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 2,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": "0",
+      "other_crimes_against_women": 10,
+      "total_cyber_crimes_against_women": 15
+    },
+    {
+      "sl__no_": "7",
+      "state_ut": "Gujarat",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": 3,
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 37,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 30,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": 4,
+      "other_crimes_against_women": 275,
+      "total_cyber_crimes_against_women": 349
+    },
+    {
+      "sl__no_": "8",
+      "state_ut": "Haryana",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": 2,
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 91,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 13,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": 1,
+      "fake_profile__it_act_r_w_ipc_sll_": 4,
+      "other_crimes_against_women": 155,
+      "total_cyber_crimes_against_women": 266
+    },
+    {
+      "sl__no_": "9",
+      "state_ut": "Himachal Pradesh",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": "0",
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 15,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 9,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": 8,
+      "other_crimes_against_women": 7,
+      "total_cyber_crimes_against_women": 39
+    },
+    {
+      "sl__no_": "10",
+      "state_ut": "Jharkhand",
+      "cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_": 4,
+      "cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_": 13,
+      "cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_": 18,
+      "defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_": "0",
+      "fake_profile__it_act_r_w_ipc_sll_": 4,
+      "other_crimes_against_women": 31,
+      "total_cyber_crimes_against_women": 70
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Build directories
+frontend/dist/
+frontend/build/
+backend/dist/
+backend/build/
+
+# Environment files
+frontend/.env
+backend/.env
+
+# Cache and temp files
+frontend/.cache/
+backend/.cache/
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.iml
+
+# System files
+*.DS_Store
+*.vscode/
+*.env.local
+*.env.development
+*.env.production
+*.env.test
+.env.*
+
+# Coverage and testing
+frontend/coverage/
+backend/coverage/
+jest/
+*.lcov
+
+# Dependency directories
+frontend/node_modules/
+backend/node_modules/
+
+# Deployment files
+frontend/.vercel/
+frontend/.netlify/
+backend/.vercel/
+backend/.netlify/
