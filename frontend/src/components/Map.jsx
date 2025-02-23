@@ -287,7 +287,7 @@ const Map = () => {
       <div className="w-1/3 p-2">
         {" "}
         {/* Reduced width and padding */}
-        <div className="relative h-full rounded-2xl overflow-hidden border border-black bg-white">
+        <div className="relative h-full rounded-2xl overflow-hidden border-2 border-black bg-white">
           {/* Loading State */}
           {!map && (
             <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
@@ -301,7 +301,7 @@ const Map = () => {
           <div id="map" className="h-full w-full"></div>
 
           {/* Map Controls */}
-          <div className="absolute top-4 right-4 bg-white rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#FF1493] p-2 space-y-2">
+          <div className="absolute top-4 right-4 bg-white rounded-xl border border-black shadow-[4px_4px_0px_0px_#FF1493] p-2 space-y-2">
             <button
               onClick={() => map?.setZoom((map.getZoom() || 5) + 1)}
               className="p-2 hover:bg-pink-50 rounded-lg transition-colors"
@@ -325,10 +325,10 @@ const Map = () => {
           {" "}
           {/* Reduced gap */}
           {/* Header */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 border border-black hover:shadow-[4px_4px_0px_0px_#FF1493] transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 border-2 border-black hover:shadow-[4px_4px_0px_0px_#FF1493] transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF1493] to-pink-400 flex items-center justify-center border-2 border-black">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF1493] to-pink-400 flex items-center justify-center border border-black">
                   <ShieldExclamationIcon className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -347,7 +347,7 @@ const Map = () => {
               </div>
 
               {/* Real-time Indicator */}
-              <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border-2 border-black">
+              <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-black">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-xs font-bold text-green-700">
                   Live Data
@@ -361,7 +361,7 @@ const Map = () => {
             {/* Changed to 6 columns */}
             {cyberCrimesData.length > 0 && (
               <>
-                <div className="col-span-6 p-2 rounded-xl border border-black bg-gradient-to-r from-[#FF1493] to-pink-500">
+                <div className="col-span-6 p-2 rounded-xl border-2 border-black bg-gradient-to-r from-[#FF1493] to-pink-500">
                   <div className="relative z-10 flex justify-between items-center">
                     <div>
                       <h3 className="text-white font-bold">
@@ -371,7 +371,7 @@ const Map = () => {
                         {cyberCrimesData[0].total_cyber_crimes_against_women}
                       </p>
                     </div>
-                    <div className="w-16 h-16 bg-white/10 rounded-xl border-2 border-white/20 flex items-center justify-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-xl border border-white/20 flex items-center justify-center">
                       <ExclamationTriangleIcon className="w-8 h-8 text-white" />
                     </div>
                   </div>
@@ -395,7 +395,7 @@ const Map = () => {
             )}
           </div>
           {/* Chart Section */}
-          <div className="flex-1 min-h-0 bg-white rounded-xl border border-black relative overflow-hidden">
+          <div className="flex-1 min-h-0 bg-white rounded-xl border-2 border-black relative overflow-hidden">
             <div className="relative z-10 p-3 h-full flex flex-col">
               {" "}
               {/* Reduced padding */}
@@ -404,7 +404,7 @@ const Map = () => {
                 {" "}
                 {/* Reduced margin */}
                 <h3 className="text-base font-bold">Crime Distribution</h3>
-                <div className="flex gap-1 bg-gray-50 p-1 rounded-lg border-1 border-black">
+                <div className="flex gap-1 bg-gray-50 p-1 rounded-lg border border-black">
                   {["D", "W", "M", "Y"].map((period) => (
                     <button
                       key={period}

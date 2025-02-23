@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
@@ -26,7 +26,7 @@ const AnimatedBackground = () => (
   </div>
 );
 
-// Enhanced FacilityCard with creative elements
+// Update FacilityCard border styles
 const FacilityCard = ({
   place,
   type,
@@ -48,7 +48,7 @@ const FacilityCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
-      className="relative bg-white p-6 rounded-xl border-4 border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300"
+      className="relative bg-white p-6 rounded-xl border border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300"
     >
       {/* Creative Status Indicator */}
       {/* <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -83,7 +83,7 @@ const FacilityCard = ({
       <div className="flex items-start space-x-4">
         <div
           className={`
-          p-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000]
+          p-3 rounded-xl border border-black shadow-[4px_4px_0px_0px_#000]
           ${isHospital ? "bg-pink-50" : "bg-blue-50"}
         `}
         >
@@ -133,7 +133,7 @@ const FacilityCard = ({
       <div className="mt-6 flex space-x-3">
         <button
           onClick={onGetDirections}
-          className="flex-1 flex items-center justify-center px-4 py-3 bg-white rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+          className="flex-1 flex items-center justify-center px-4 py-3 bg-white rounded-xl font-bold border border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
         >
           <svg
             className="w-5 h-5 mr-2"
@@ -159,7 +159,7 @@ const FacilityCard = ({
         <button
           onClick={onCall}
           className={`
-            px-6 py-3 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200 text-white
+            px-6 py-3 rounded-xl font-bold border border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200 text-white
             ${isHospital ? "bg-[#FF1493]" : "bg-blue-600"}
           `}
         >
@@ -168,7 +168,7 @@ const FacilityCard = ({
       </div>
 
       {/* Add facility status indicators */}
-      <div className="mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+      <div className="mt-4 pt-4 border-t border-dashed border-gray-200">
         <div className="flex justify-between text-xs font-medium">
           <span
             className={`${isHospital ? "text-[#FF1493]" : "text-blue-600"}`}
@@ -421,7 +421,7 @@ const HelpPage = () => {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] w-full max-w-2xl"
+        className="bg-white rounded-3xl border border-black shadow-[8px_8px_0px_0px_#FF1493] w-full max-w-2xl"
       >
         <div className="bg-[#FF1493] px-6 py-4 flex justify-between items-center rounded-t-2xl">
           <h3 className="text-xl font-bold text-white">
@@ -657,7 +657,7 @@ const HelpPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border-4 border-black shadow-[8px_8px_0px_0px_#FF1493]"
+            className="bg-white rounded-xl p-6 border border-black shadow-[4px_4px_0px_0px_#FF1493]"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -689,7 +689,7 @@ const HelpPage = () => {
               key={tab}
               onClick={() => setSelectedTab(tab)}
               className={`
-                px-6 py-2 rounded-xl font-bold border-2 border-black transition-all duration-200 flex items-center space-x-2
+                px-6 py-2 rounded-xl font-bold border border-black transition-all duration-200 flex items-center space-x-2
                 ${
                   selectedTab === tab
                     ? "bg-[#FF1493] text-white shadow-[4px_4px_0px_0px_#000]"
@@ -752,7 +752,7 @@ const HelpPage = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 bg-white border-4 border-black p-4 rounded-xl shadow-[8px_8px_0px_0px_#FF1493]"
+            className="mb-6 bg-white border border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_#FF1493]"
           >
             {/* ...existing error content... */}
           </motion.div>
@@ -783,7 +783,7 @@ const HelpPage = () => {
         className="fixed bottom-6 right-6 z-40"
       >
         <span className="absolute inset-0 rounded-xl bg-[#FF1493] animate-ping opacity-25"></span>
-        <div className="relative flex items-center justify-center w-16 h-16 bg-[#FF1493] text-white rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+        <div className="relative flex items-center justify-center w-16 h-16 bg-[#FF1493] text-white rounded-xl border border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
           <svg
             className="w-8 h-8"
             fill="none"
@@ -806,7 +806,7 @@ const HelpPage = () => {
           <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse"></span>
         </div>
       </motion.button>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
