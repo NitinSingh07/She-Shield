@@ -105,51 +105,120 @@ const Complaints = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-red-50 to-orange-100 relative">
+    <div className="min-h-screen bg-[#FFF5F7] pt-24">
       <Navbar />
+
+      {/* Creative Background Elements */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-[#FF1493] rounded-full opacity-10 blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-72 h-72 bg-black rounded-full opacity-10 blur-[100px] animate-pulse delay-1000"></div>
+      </div>
+
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Complaints History */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2
-              className="text-4xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-4 
-                         flex items-center space-x-3"
-            >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 via-red-500 to-orange-400">
-                Your Complaints
-              </span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+        >
+          {/* Submit Complaint Form */}
+          <div className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493]">
+            <h2 className="text-3xl font-black mb-8">
+              {editingComplaintId ? "Edit Report" : "File a Report"}
+              <div className="h-2 w-20 bg-[#FF1493] mt-2 rounded-full"></div>
             </h2>
-            <div className="space-y-6">
-              {complaints.length === 0 ? (
-                <motion.div
-                  className="bg-white rounded-2xl p-8 text-center shadow-md"
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  className="w-full p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] focus:shadow-none transform transition-all duration-200 focus:translate-x-1 focus:translate-y-1 focus:outline-none resize-none min-h-[150px]"
+                  placeholder="Describe what happened..."
+                />
+              </div>
+
+              {/* Enhanced File Upload */}
+              <div className="relative">
+                <input
+                  type="file"
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  accept="image/*"
+                />
+                <div className="p-4 border-2 border-dashed border-[#FF1493] rounded-xl text-center">
+                  <div className="text-[#FF1493]">
+                    📸 Click to upload evidence (optional)
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Supports: JPG, PNG, HEIC
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <motion.button
                   whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="flex-1 bg-[#FF1493] text-white px-6 py-3 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
                 >
-                  <p className="text-lg text-gray-600">
-                    No complaints submitted yet.
-                  </p>
-                  <p className="text-gray-500 mt-2">
-                    Your complaints will appear here once submitted.
-                  </p>
-                </motion.div>
-              ) : (
-                complaints.map((complaint, index) => (
+                  {editingComplaintId ? "Update Report" : "Submit Report"}
+                </motion.button>
+                {editingComplaintId && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => {
+                      setEditingComplaintId(null);
+                      setDescription("");
+                      setPhoto(null);
+                    }}
+                    className="flex-1 bg-gray-100 text-gray-700 py-3 px-6 
+                             rounded-xl hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </motion.button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          {/* Complaints History */}
+          <div className="space-y-6">
+            <h2 className="text-3xl font-black">
+              Your Reports
+              <div className="h-2 w-20 bg-[#FF1493] mt-2 rounded-full"></div>
+            </h2>
+
+            {complaints.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] text-center"
+              >
+                <div className="text-6xl mb-4">📝</div>
+                <p className="text-lg font-medium">No reports submitted yet</p>
+                <p className="text-gray-600 mt-2">
+                  Your reports will appear here
+                </p>
+              </motion.div>
+            ) : (
+              <div className="space-y-6">
+                {complaints.map((complaint, index) => (
                   <motion.div
                     key={complaint._id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg
-                             transition-all duration-300 border border-gray-100"
+                    className="bg-white p-6 rounded-xl border-4 border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <p className="text-sm text-gray-500">Posted on:</p>
-                        <p className="text-gray-700 font-medium">
+                        <p className="text-sm font-mono text-gray-500">Posted on:</p>
+                        <p className="text-gray-700 font-mono">
                           {new Date(complaint.createdAt).toLocaleDateString(
                             "en-US",
                             {
@@ -199,92 +268,11 @@ const Complaints = () => {
                       </motion.div>
                     )}
                   </motion.div>
-                ))
-              )}
-            </div>
-          </motion.div>
-
-          {/* Submit Complaint Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
-              <h2
-                className="text-3xl font-bold mb-6 bg-clip-text text-transparent 
-                           bg-gradient-to-r from-yellow-500 via-red-500 to-orange-400"
-              >
-                {editingComplaintId ? "Edit Complaint" : "Submit a Complaint"}
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                    className="w-full p-4 border border-gray-200 rounded-xl
-                             focus:outline-none focus:ring-2 focus:ring-blue-500
-                             text-gray-700 placeholder-gray-400 bg-gray-50
-                             resize-none min-h-[150px]"
-                    placeholder="Describe your complaint..."
-                  />
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="relative group"
-                >
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Photo (Optional)
-                  </label>
-                  <input
-                    type="file"
-                    onChange={(e) => setPhoto(e.target.files[0])}
-                    className="w-full text-sm text-gray-500
-                             file:mr-4 file:py-2 file:px-4 file:rounded-full
-                             file:border-0 file:bg-blue-50 file:text-blue-700
-                             hover:file:bg-blue-100 file:transition-colors"
-                    accept="image/*"
-                  />
-                </motion.div>
-                <div className="flex gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="flex-1 bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400
-                             text-white py-3 px-6 rounded-xl font-medium
-                             hover:opacity-90 transition-all duration-300
-                             shadow-md hover:shadow-lg"
-                  >
-                    {editingComplaintId
-                      ? "Update Complaint"
-                      : "Submit Complaint"}
-                  </motion.button>
-                  {editingComplaintId && (
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      type="button"
-                      onClick={() => {
-                        setEditingComplaintId(null);
-                        setDescription("");
-                        setPhoto(null);
-                      }}
-                      className="flex-1 bg-gray-100 text-gray-700 py-3 px-6 
-                               rounded-xl hover:bg-gray-200 transition-colors"
-                    >
-                      Cancel
-                    </motion.button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </motion.div>
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

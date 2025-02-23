@@ -65,9 +65,9 @@ export default function EmergencyNotification() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-xl mb-4"
+              className="w-full mt-20 max-w-md bg-pink-50 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-xl mb-4"
             >
-              <div className="space-y-4">
+              <div className="space-y-4 ">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-gray-800">
                     Emergency Alert
@@ -84,7 +84,7 @@ export default function EmergencyNotification() {
 
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                    <p className="text-white">
+                    <p className="text-pink-500">
                       <span className="font-semibold">Coordinates:</span>{" "}
                       {notification.location &&
                         `${notification.location.latitude.toFixed(
@@ -96,7 +96,7 @@ export default function EmergencyNotification() {
                   {notification.message && (
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                      <p className="text-white">
+                      <p className="text-pink-500">
                         <span className="font-semibold">Message:</span>{" "}
                         {notification.message}
                       </p>
@@ -104,7 +104,7 @@ export default function EmergencyNotification() {
                   )}
                 </div>
 
-                <div className="mt-4 text-sm text-white/80">
+                <div className="mt-4 text-sm text-pink-700">
                   Emergency services have been notified of this location. Stay
                   calm and remain in a safe place.
                 </div>

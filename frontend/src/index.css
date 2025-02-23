@@ -12,7 +12,8 @@
 }
 
 @keyframes gradient-x {
-  0%, 100% {
+  0%,
+  100% {
     background-size: 200% 200%;
     background-position: left center;
   }
@@ -24,6 +25,12 @@
 
 .animate-gradient-x {
   animation: gradient-x 15s ease infinite;
+}
+
+@layer base {
+  * {
+    font-family: "Space Mono", monospace !important;
+  }
 }
 
 /* Add subtle pattern */

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const ComplaintPost = () => {
@@ -34,10 +35,19 @@ const ComplaintPost = () => {
   }, []);
 
   return (
-    <div className="p-8 mt-6 rounded-3xl min-h-screen bg-gradient-to-br from-[#f8dcbc] to-[#f2d9bc]">
-      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide">
-        User Complaints
-      </h2>
+    <div className="bg-[#FFF5F7] p-8">
+      {/* Enhanced Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12"
+      >
+        <h2 className="text-4xl font-black text-black inline-block relative">
+          Community Reports
+          <div className="absolute -bottom-2 left-0 w-full h-2 bg-[#FF1493] rounded-full"></div>
+        </h2>
+        <p className="text-gray-600 mt-4">Together we can make a difference</p>
+      </motion.div>
 
       {complaints.length === 0 ? (
         <div className="text-center mt-20">
@@ -47,59 +57,73 @@ const ComplaintPost = () => {
           <div className="text-6xl animate-bounce">📬</div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {complaints.map((complaint) => (
-            <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {complaints.map((complaint, index) => (
+            <motion.div
               key={complaint._id}
-              className="relative bg-white/90 backdrop-blur-lg p-6 rounded-3xl shadow-xl hover:shadow-2xl "
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] hover:shadow-none transform hover:translate-x-2 hover:translate-y-2 transition-all duration-200 overflow-hidden"
             >
-              {/* Floating User Badge */}
-              <div className="absolute top-0 left-0 bg-[#093208] text-white text-xs px-4 py-2 rounded-full flex items-center shadow-lg">
-                <div className="w-8 h-8 rounded-full bg-white text-[#ff6f61] flex items-center justify-center mr-3">
-                  <FaUser className="text-lg" />
+              {/* User Badge */}
+              <div className="bg-[#FF1493] text-white p-4 border-b-4 border-black">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl border-2 border-black bg-white text-[#FF1493] flex items-center justify-center">
+                    <FaUser size={20} />
+                  </div>
+                  <span className="font-bold">
+                    {complaint.userId?.username || "Anonymous"}
+                  </span>
                 </div>
-                <span className="font-semibold">
-                  {complaint.userId?.name ||
-                    complaint.userId?.username ||
-                    "Anonymous"}
-                </span>
               </div>
 
-              {/* Complaint Photo */}
-              {complaint.photo && (
-                <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${
-                    complaint.photo
-                  }`}
-                  alt="Complaint"
-                  className="mt-10 rounded-xl shadow-lg object-cover max-h-full w-full"
-                  onError={(e) => {
-                    console.error("Image failed to load:", e);
-                    e.target.style.display = "none";
-                  }}
-                />
-              )}
+              {/* Complaint Content */}
+              <div className="p-6">
+                {complaint.photo && (
+                  <div className="mb-4 rounded-xl border-2 border-black overflow-hidden">
+                    <img
+                      src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${
+                        complaint.photo
+                      }`}
+                      alt="Report Evidence"
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
 
-              {/* Complaint Description */}
-              <p className="text-lg text-[#34495e] mt-2 line-clamp-4">
-                {complaint.description}
-              </p>
+                <p className="text-gray-800 font-medium">
+                  {complaint.description}
+                </p>
 
-              {/* Date */}
-              <div className="text-sm text-[#7f8c8d] mt-2">
-                <span className="italic">Posted on</span>{" "}
-                {new Date(complaint.createdAt).toLocaleDateString()}
+                <div className="mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+                  <span className="text-sm text-gray-500">
+                    Reported on{" "}
+                    {new Date(complaint.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-      <button
-        onClick={() => navigate("/complaints")}
-        className="bg-[#093208] items-start justify-start  text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6 "
+
+      {/* Enhanced CTA Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => navigate("/reportincident")}
+        className="mt-12 mx-auto block bg-[#FF1493] text-white px-8 py-4 rounded-xl font-bold border-4 border-black shadow-[8px_8px_0px_0px_#000] hover:shadow-none transform hover:translate-x-2 hover:translate-y-2 transition-all duration-200"
       >
-        Add a Complaint
-      </button>
+        Report an Incident
+      </motion.button>
     </div>
   );
 };

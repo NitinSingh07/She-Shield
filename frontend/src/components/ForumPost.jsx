@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+
 const ForumPost = () => {
   const [posts, setPosts] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -18,43 +17,69 @@ const ForumPost = () => {
   }, []);
 
   return (
-    <div className="container mx-auto relative overflow-hidden p-4 ">
-      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-5 tracking-wide relative inline-block before:absolute before:w-16 before:h-2 before:bg-[#ff7e5f] before:bottom-0 before:left-1/2 before:-translate-x-1/2">
-        Latest Forums
-      </h2>
+    <div className="container mx-auto p-8">
+      {/* Enhanced Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12 relative"
+      >
+        <h2 className="text-4xl font-black text-black relative inline-block">
+          Community Forums
+          <div className="absolute -bottom-2 left-0 w-full h-2 bg-[#FF1493] rounded-full transform -rotate-1"></div>
+        </h2>
+        <p className="text-gray-600 mt-4">
+          Join the conversation and share your experiences
+        </p>
+      </motion.div>
+
       {posts.length > 0 ? (
-        <div className="relative w-full overflow-hidden py-4 px-2">
-          <motion.div
-            className="flex space-x-4"
-            animate={{ x: [10, -100] }}
-            transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-          >
-            {posts.map((post, index6) => (
-              <div
-                key={post._id} // Changed from index to post._id for better key management
-                className="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg w-80 flex-shrink-0"
+        <div className="relative overflow-hidden">
+          {/* Forum Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post, index) => (
+              <motion.div
+                key={post._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white p-6 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] hover:shadow-none transform hover:translate-x-2 hover:translate-y-2 transition-all duration-200"
               >
-                <div className="flex items-center gap-2 text-gray-700 text-sm font-medium">
-                  <div className="w-10 h-10 bg-gradient-to-r from-[#ff7e5f] to-[#feb47b] text-white flex justify-center items-center rounded-full shadow-md">
-                    <FaUser />
+                {/* User Info */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl border-2 border-black bg-[#FF1493] text-white flex items-center justify-center shadow-[4px_4px_0px_0px_#000]">
+                    <FaUser size={20} />
                   </div>
-                  {post.userId.username}
+                  <div>
+                    <h3 className="font-bold text-black">
+                      {post.userId.username}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      {new Date(post.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-[#2c3e50] mt-2">
+
+                {/* Content */}
+                <h4 className="text-xl font-bold text-black mb-2">
                   {post.title}
-                </h3>
-                <p className="text-gray-600 text-sm line-clamp-3 border-l-4 border-[#ff7e5f] pl-3 mt-2">
+                </h4>
+                <p className="text-gray-600 border-l-4 border-[#FF1493] pl-4">
                   {post.content}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </motion.div>
-          <button
+          </div>
+
+          {/* Enhanced CTA Button */}
+          {/* <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/forum")}
-            className="bg-gradient-to-r items-start justify-start from-[#e67e22] to-[#f39c12] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6 "
+            className="mt-8 bg-[#FF1493] text-white px-8 py-4 rounded-xl font-bold border-4 border-black shadow-[8px_8px_0px_0px_#000] hover:shadow-none transform hover:translate-x-2 hover:translate-y-2 transition-all duration-200"
           >
-            Post a Forum
-          </button>
+            Start a Discussion
+          </motion.button> */}
         </div>
       ) : (
         <div className="text-center mt-12">

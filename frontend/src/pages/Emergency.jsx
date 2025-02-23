@@ -208,109 +208,86 @@ export default function EmergencySection() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="min-h-screen bg-[#FFF5F7]">
       <Navbar />
-      <div className="min-h-screen  relative flex flex-col lg:flex-row items-center justify-between bg-gradient-to-br from-yellow-300 via-red-400 to-orange-500 text-gray-900 p-4 md:p-8">
-        {/* Animated background circles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full bg-white/20"
-              animate={{
-                scale: [1, 2, 1],
-                x: [0, 100, 0],
-                y: [0, 50, 0],
-              }}
-              transition={{
-                duration: 15,
-                repeat: Infinity,
-                delay: i * 2,
-              }}
-              style={{
-                width: `${100 + i * 50}px`,
-                height: `${100 + i * 50}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-            />
-          ))}
-        </div>
 
-        {/* Left side - Emergency Controls */}
-        <div className="z-10 flex flex-col items-center justify-center space-y-8 w-full lg:w-1/2 p-4 md:p-8">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-6xl font-black text-white text-center bg-clip-text"
-          >
+      <div className="pt-24 container mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <motion.div
+          className="bg-white rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] p-8 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-4xl font-black text-black mb-4">
             Emergency Response Hub
-          </motion.h1>
+            <div className="h-2 w-32 bg-[#FF1493] mt-2 rounded-full"></div>
+          </h1>
 
-          {/* Floating Emergency Tips */}
+          {/* Emergency Tips */}
           <AnimatePresence mode="wait">
-            <motion.p
+            <motion.div
               key={currentTip}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-xl text-white/90 text-center font-medium"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="bg-pink-50 p-4 rounded-xl border-2 border-black"
             >
-              Tip: {emergencyTips[currentTip]}
-            </motion.p>
+              <span className="text-[#FF1493] font-bold">Safety Tip: </span>
+              {emergencyTips[currentTip]}
+            </motion.div>
           </AnimatePresence>
+        </motion.div>
 
-          {/* Emergency Button */}
+        {/* Emergency Controls */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
-            className="relative"
-            animate={
-              alertSent
-                ? {
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 5, -5, 0],
-                  }
-                : {}
-            }
-            transition={{ duration: 0.5, repeat: alertSent ? Infinity : 0 }}
+            className="space-y-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <button
+            {/* Emergency Button */}
+            <motion.button
               onClick={handleEmergencyClick}
               disabled={alertSent}
-              className="relative bg-gradient-to-br from-red-600 to-pink-600 text-white px-12 py-6 text-2xl font-bold rounded-full shadow-2xl flex items-center gap-4 border-4 border-white/50 transition-all hover:scale-105 focus:outline-none disabled:opacity-75"
+              className={`
+                w-full p-8 rounded-xl border-4 border-black 
+                ${alertSent ? "bg-red-500" : "bg-[#FF1493]"} 
+                text-white font-bold text-xl
+                shadow-[8px_8px_0px_0px_#000] hover:shadow-none 
+                transform hover:translate-x-2 hover:translate-y-2 
+                transition-all duration-200
+              `}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {alertSent ? (
-                <>
-                  <ShieldCheckIcon className="w-10 h-10" />
-                  Sending Alert ({countdown})
-                </>
-              ) : (
-                <>
-                  <BellAlertIcon className="w-10 h-10 animate-pulse" />
-                  Activate Emergency
-                </>
-              )}
-            </button>
-            {/* Ripple effect */}
-            {alertSent && (
-              <div className="absolute inset-0 animate-ping rounded-full bg-red-500/50" />
-            )}
-          </motion.div>
+              <div className="flex items-center justify-center gap-4">
+                {alertSent ? (
+                  <>
+                    <ShieldCheckIcon className="w-8 h-8" />
+                    <span>Sending Alert ({countdown})</span>
+                  </>
+                ) : (
+                  <>
+                    <BellAlertIcon className="w-8 h-8" />
+                    <span>Activate Emergency Response</span>
+                  </>
+                )}
+              </div>
+            </motion.button>
 
-          {/* Alert Details */}
-          <AnimatePresence>
+            {/* Alert Details Card */}
             {alertSent && alertDetails && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-xl"
+                className="bg-pink-100 p-6 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493]"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold text-white">
+                    <h3 className="text-xl font-semibold text-black">
                       Alert Details
                     </h3>
-                    <span className="text-sm text-white/80">
+                    <span className="text-sm text-black/80">
                       {alertDetails.timestamp}
                     </span>
                   </div>
@@ -318,7 +295,7 @@ export default function EmergencySection() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                      <p className="text-white">
+                      <p className="text-black">
                         <span className="font-semibold">Location:</span>{" "}
                         {alertDetails.city}, {alertDetails.state}
                       </p>
@@ -326,74 +303,42 @@ export default function EmergencySection() {
 
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                      <p className="text-white">
+                      <p className="text-black">
                         <span className="font-semibold">Coordinates:</span>{" "}
                         {alertDetails.coordinates}
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 text-sm text-white/80">
+                  <div className="mt-4 text-sm text-black/80">
                     Emergency services have been notified of your location. Stay
                     calm and remain in a safe place.
                   </div>
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>
+          </motion.div>
 
-          {/* Status message */}
-          <AnimatePresence>
-            {alertSent && (
+          {/* Image Gallery */}
+          <div className="grid grid-cols-2 gap-4">
+            {images.map((img, index) => (
               <motion.div
+                key={index}
+                className="relative aspect-square"
+                whileHover={{ scale: 1.05 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="text-white text-center space-y-2"
+                transition={{ delay: index * 0.1 }}
               >
-                <p className="text-xl font-semibold">
-                  Alert Activation In Progress
-                </p>
-                <div className="flex justify-center gap-2">
-                  {[...Array(3)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="w-3 h-3 bg-white rounded-full"
-                      animate={{ scale: [1, 1.5, 1] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: i * 0.2,
-                      }}
-                    />
-                  ))}
-                </div>
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  onError={(e) => handleImageError(e, img.fallback)}
+                  className="w-full h-full object-cover rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_#FF1493]"
+                />
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Right side - Image Gallery */}
-        <div className="z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-1/2 p-4 md:p-8">
-          {images.map((img, index) => (
-            <motion.div
-              key={index}
-              className="relative aspect-square"
-              whileHover={{ scale: 1.05, rotate: index % 2 ? 3 : -3 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-            >
-              <img
-                src={img.src}
-                alt={img.alt}
-                onError={(e) => handleImageError(e, img.fallback)}
-                className="rounded-2xl shadow-2xl border-4 border-white/50 object-cover w-full h-full"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl" />
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       <Footer />

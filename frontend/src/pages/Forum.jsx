@@ -105,169 +105,111 @@ const Forum = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#FFF5F7] pt-24">
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-red-50 to-orange-100 relative">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
 
-        {/* Floating Shapes */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-32 h-32 bg-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+      {/* Creative Background Pattern */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#FFF5F7] to-transparent"></div>
+      </div>
 
-        {/* Main Content */}
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col lg:flex-row justify-between gap-8">
-            {/* Left Side: Previous Forums */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="lg:w-1/2"
-            >
-              <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-xl border border-white/40">
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400 bg-clip-text text-transparent mb-6 border-b border-gray-200/50 pb-4">
-                  Posted Forums
-                </h2>
-                <div className="space-y-6">
-                  {posts.length === 0 ? (
-                    <div className="text-center py-8">
-                      <p className="text-gray-500 text-lg">
-                        You haven’t posted any forums yet.
-                      </p>
-                      <p className="text-gray-400 mt-2">
-                        Your forums will appear here once submitted.
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+        >
+          {/* Forum Form */}
+          <div className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493]">
+            <h2 className="text-3xl font-black mb-8">
+              {editingPostId ? "Edit Forum" : "Post a Forum"}
+              <div className="h-2 w-20 bg-[#FF1493] mt-2 rounded-full"></div>
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <input
+                type="text"
+                placeholder="Discussion Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] focus:shadow-none transform transition-all duration-200 focus:translate-x-1 focus:translate-y-1 focus:outline-none"
+                required
+              />
+
+              <textarea
+                placeholder="Share your thoughts..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="w-full p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] focus:shadow-none transform transition-all duration-200 focus:translate-x-1 focus:translate-y-1 focus:outline-none resize-none min-h-[150px]"
+                required
+              />
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="w-full bg-[#FF1493] text-white px-6 py-3 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+              >
+                {editingPostId ? "Update Discussion" : "Post Discussion"}
+              </motion.button>
+            </form>
+          </div>
+
+          {/* Forum Posts */}
+          <div className="space-y-6">
+            <h2 className="text-3xl font-black">
+              Your Forums
+              <div className="h-2 w-20 bg-[#FF1493] mt-2 rounded-full"></div>
+            </h2>
+
+            {posts.map((post, index) => (
+              <motion.div
+                key={post._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white p-6 rounded-xl border-4 border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    {/* Add this date display */}
+                    <div>
+                      <p className="text-gray-700 font-mono">
+                        {new Date(post.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
                       </p>
                     </div>
-                  ) : (
-                    posts.map((post) => (
-                      <motion.div
-                        key={post._id}
-                        whileHover={{ scale: 1.02 }}
-                        className="backdrop-blur-sm bg-white/60 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-white/40"
-                      >
-                        {/* Post content structure remains same but with updated styling */}
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="font-semibold text-xl text-gray-800 hover:text-blue-600 transition-colors">
-                              {post.title}
-                            </h3>
-                            <p className="text-sm text-gray-500 mt-1">
-                              {moment(post.createdAt).format(
-                                "MMMM Do YYYY, h:mm A"
-                              )}
-                            </p>
-                          </div>
-                          <div className="flex gap-3">
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => handleEdit(post)}
-                              className="p-2 bg-blue-100/80 text-blue-600 rounded-full hover:bg-blue-200"
-                              title="Edit Post"
-                            >
-                              <FiEdit2 size={20} />
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => handleDelete(post._id)}
-                              className="p-2 bg-red-100/80 text-red-600 rounded-full hover:bg-red-200"
-                              title="Delete Post"
-                            >
-                              <FiTrash2 size={20} />
-                            </motion.button>
-                          </div>
-                        </div>
-                        <p className="text-gray-700 whitespace-pre-wrap">
-                          {post.content}
-                        </p>
-                      </motion.div>
-                    ))
-                  )}
+                    <h3 className="text-xl font-bold">{post.title}</h3>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(post)}
+                      className="p-2 rounded-lg border-2 border-black hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+                    >
+                      <FiEdit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(post._id)}
+                      className="p-2 rounded-lg border-2 border-black hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-
-            {/* Right Side: Post a Forum */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="lg:w-1/2"
-            >
-              <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-xl border border-white/40">
-                <div className="text-center mb-8">
-                  <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400 bg-clip-text text-transparent mb-6 border-b border-gray-200/50 pb-4">
-                    Share Your Voice
-                  </h2>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Form fields with enhanced styling */}
-                  <div>
-                    <label
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                      htmlFor="title"
-                    >
-                      Title
-                    </label>
-                    <input
-                      id="title"
-                      type="text"
-                      placeholder="Enter a title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      required
-                      className="w-full px-6 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg transition-all duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                      htmlFor="content"
-                    >
-                      Content
-                    </label>
-                    <textarea
-                      id="content"
-                      placeholder="Enter content for your forum"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      required
-                      rows="6"
-                      className="w-full px-6 py-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg transition-all duration-300 resize-none"
-                    />
-                  </div>
-                  <div className="flex gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      type="submit"
-                      className="flex-1 bg-gradient-to-r from-yellow-400 via-red-500 to-orange-400 text-white py-4 rounded-xl hover:opacity-90 transition-all duration-300 font-medium shadow-lg"
-                    >
-                      {editingPostId ? "Update Post" : "Create Post"}
-                    </motion.button>
-                    {editingPostId && (
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        type="button"
-                        onClick={() => {
-                          setEditingPostId(null);
-                          setTitle("");
-                          setContent("");
-                        }}
-                        className="flex-1 bg-gray-500 text-white py-4 rounded-xl hover:bg-gray-600 transition-colors duration-200 font-medium"
-                      >
-                        Cancel
-                      </motion.button>
-                    )}
-                  </div>
-                </form>
-              </div>
-            </motion.div>
+                <p className="text-gray-600">{post.content}</p>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

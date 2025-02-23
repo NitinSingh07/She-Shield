@@ -47,6 +47,9 @@ export default {
           700: "#0369a1",
         },
       },
+      fontFamily: {
+        mono: ["Space Mono", "monospace"],
+      },
     },
   },
   plugins: [

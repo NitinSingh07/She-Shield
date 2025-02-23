@@ -8,7 +8,6 @@ import {
   ExclamationTriangleIcon,
   UserGroupIcon,
   DocumentDuplicateIcon,
-
 } from "@heroicons/react/24/solid";
 import {
   BarChart,
@@ -226,9 +225,9 @@ const Map = () => {
         </div>
       `;
 
-    //   L.marker([record.latitude, record.longitude])
-    //     .addTo(newMarkersLayer)
-    //     .bindPopup(popupContent);
+      //   L.marker([record.latitude, record.longitude])
+      //     .addTo(newMarkersLayer)
+      //     .bindPopup(popupContent);
     });
 
     setMarkersLayer(newMarkersLayer);
@@ -282,7 +281,7 @@ const Map = () => {
   return (
     <div className="flex h-screen rounded-3xl">
       {/* Left Side - Map */}
-      <div className="w-1/2 h-screen p-4">
+      <div className="w-1/2  h-screen p-4">
         <div className="h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
           <div id="map" className="h-full w-full"></div>
         </div>
@@ -307,7 +306,6 @@ const Map = () => {
                   {userLocation.lat} , {userLocation.lng})
                 </p>
               </div>
-
             )}
           </div>
 
@@ -389,7 +387,7 @@ const Map = () => {
 
           {/* Chart Section - Fills Remaining Space */}
           {cyberCrimesData.length > 0 && (
-            <div className="flex-1 bg-white rounded-xl shadow-lg relative overflow-hidden group">
+            <div className="flex-1 bg-white rounded-xl relative overflow-hidden group">
               {/* Decorative Elements */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"></div>
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-20"></div>
@@ -398,12 +396,9 @@ const Map = () => {
               <div className="relative z-10 p-6 h-full flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+                    <h3 className="text-md font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
                       Crime Distribution Analysis
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      State-wise breakdown of cyber crimes
-                    </p>
                   </div>
                   <div className="flex gap-2">
                     {["Day", "Week", "Month", "Year"].map((period) => (
