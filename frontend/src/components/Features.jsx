@@ -1,59 +1,84 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
+
+const FeatureCard = ({ icon, title, description, color, delay }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="relative bg-white p-6 rounded-xl border-4 border-black"
+      style={{
+        boxShadow: isHovered
+          ? "8px 8px 0px 0px #FF1493"
+          : "8px 8px 0px 0px #000",
+        transform: isHovered ? "translate(-4px, -4px)" : "none",
+        transition: "all 0.3s ease",
+      }}
+    >
+      <div
+        className={`w-12 h-12 ${color} rounded-xl border-2 border-black mb-4 flex items-center justify-center`}
+      >
+        {icon}
+      </div>
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+
+      {/* Neo-brutalism decorative elements */}
+      <div className="absolute -top-2 -right-2 w-4 h-4 bg-[#FF1493] rounded-full"></div>
+      <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-black rounded-full"></div>
+    </motion.div>
+  );
+};
 
 const FeatureCards = () => {
   const features = [
     {
-      title: "Anonymous & Secure Reporting",
-      image: "/reporting.jpg",
-      link: "/complaints",
+      icon: "🚨",
+      title: "24/7 Emergency Response",
+      description:
+        "Immediate assistance when you need it most with real-time tracking and support.",
+      color: "bg-pink-100",
     },
     {
-      title: "Community Support & Awareness",
-      image: "/community.jpg",
-      link: "/forum",
+      icon: "🗺️",
+      title: "Safe Route Navigation",
+      description:
+        "AI-powered route suggestions to help you travel safely day or night.",
+      color: "bg-purple-100",
     },
     {
-      title: "Smart Safe Routes & Navigation",
-      image: "/navigation.jpg",
-      link: "#map",
+      icon: "👥",
+      title: "Community Support",
+      description:
+        "Connect with a network of supporters and fellow users for mutual safety.",
+      color: "bg-blue-100",
     },
     {
-      title: "Emergency Assistance & SOS",
-      image: "/Emergency.jpg",
-      link: "/emergency",
-    },
-    {
-      title: "Self-Defense & Awareness",
-      image: "/Defense.jpg",
-      link: "/training",
-    },
-    {
-      title: "Nearest Police & Medical Support",
-      image: "/Police.jpg",
-      link: "/help",
+      icon: "🔒",
+      title: "Anonymous Reporting",
+      description: "Securely report incidents while maintaining your privacy.",
+      color: "bg-green-100",
     },
   ];
 
   return (
-    <div className="container px-4 py-10 mb-[10rem] bg-gradient-to-r from-[#c76d6d] to-[#edef74] rounded-lg shadow-lg">
-      <h2 className="text-4xl font-extrabold text-[#2c3e50] text-center mb-10 tracking-wide">
-        Our Key Features
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 px-[2.5rem] gap-6 sm:ml-0">
+    <div className="py-12">
+      <motion.h2
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-4xl font-bold text-center mb-12"
+      >
+        Empowering Features
+      </motion.h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {features.map((feature, index) => (
-          <a
-            key={index}
-            href={feature.link}
-            className="bg-white rounded-lg shadow-lg p-6 transition transform hover:scale-105 h-[20rem] w-[27rem] flex flex-col items-center justify-center"
-          >
-            <img
-              src={feature.image}
-              alt={feature.title}
-              className="w-[15rem] h-[15rem] object-cover rounded-md mb-4"
-              style={{ objectFit: "cover" }}
-            />
-            <h3 className="text-xl font-semibold text-center">{feature.title}</h3>
-          </a>
+          <FeatureCard key={index} {...feature} delay={index * 0.2} />
         ))}
       </div>
     </div>

@@ -1,5 +1,135 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/Navbar";
+import { motion } from "framer-motion";
+
+const FacilityCard = ({
+  place,
+  type,
+  location,
+  onCall,
+  onGetDirections,
+  calculateDistance,
+}) => {
+  const isHospital = type === "hospital";
+  const distance = calculateDistance(
+    location.latitude,
+    location.longitude,
+    place.lat,
+    place.lon
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative bg-white p-6 rounded-xl border-4 border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300 transform hover:-translate-y-1"
+    >
+      {/* Creative Distance Badge */}
+      <div className="absolute -top-4 -right-4 transform rotate-6">
+        <div
+          className={`
+          relative px-4 py-2 ${
+            isHospital ? "bg-[#FF1493]" : "bg-blue-600"
+          } text-white 
+          rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000]
+          hover:rotate-0 transition-all duration-300
+        `}
+        >
+          <span className="text-lg font-bold">{distance}km</span>
+          <div className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+        </div>
+      </div>
+
+      {/* Facility Icon & Details */}
+      <div className="flex items-start space-x-4">
+        <div
+          className={`
+          p-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000]
+          ${isHospital ? "bg-pink-50" : "bg-blue-50"}
+        `}
+        >
+          {isHospital ? (
+            <svg
+              className="w-8 h-8 text-[#FF1493]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-8 h-8 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          )}
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold text-black">
+            {place.tags.name ||
+              `Unnamed ${isHospital ? "Hospital" : "Police Station"}`}
+          </h3>
+          <p className="mt-1 text-sm font-medium text-gray-600">
+            {place.tags.amenity || type}
+          </p>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="mt-6 flex space-x-3">
+        <button
+          onClick={onGetDirections}
+          className="flex-1 flex items-center justify-center px-4 py-3 bg-white rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+        >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          Get Directions
+        </button>
+        <button
+          onClick={onCall}
+          className={`
+            px-6 py-3 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200 text-white
+            ${isHospital ? "bg-[#FF1493]" : "bg-blue-600"}
+          `}
+        >
+          Call Now
+        </button>
+      </div>
+    </motion.div>
+  );
+};
 
 const HelpPage = () => {
   const [location, setLocation] = useState(null);
@@ -214,16 +344,32 @@ const HelpPage = () => {
     }
   }, []);
 
+  // Add this function to filter facilities based on selected tab
+  const getFilteredFacilities = () => {
+    switch (selectedTab) {
+      case "hospitals":
+        return { hospitals, policeStations: [] };
+      case "police":
+        return { hospitals: [], policeStations };
+      default:
+        return { hospitals, policeStations };
+    }
+  };
+
   const EmergencyPanel = () => (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
-        <div className="bg-red-600 px-6 py-4 flex justify-between items-center">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-white rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] w-full max-w-2xl"
+      >
+        <div className="bg-[#FF1493] px-6 py-4 flex justify-between items-center rounded-t-2xl">
           <h3 className="text-xl font-bold text-white">
             Emergency Response Panel
           </h3>
           <button
             onClick={() => setShowEmergencyPanel(false)}
-            className="text-white hover:text-red-100"
+            className="text-white hover:text-pink-200 transition-colors"
           >
             <svg
               className="w-6 h-6"
@@ -240,32 +386,25 @@ const HelpPage = () => {
             </svg>
           </button>
         </div>
+
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 gap-4">
+            {/* Emergency Buttons */}
             <button
               onClick={() => handleEmergencyCall("112")}
-              className="flex items-center justify-center space-x-2 bg-red-100 p-4 rounded-lg hover:bg-red-200 transition-colors"
+              className="flex items-center justify-center space-x-2 bg-white p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#FF1493] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
             >
               <svg
-                className="w-6 h-6 text-red-700"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                />
-              </svg>
-              <span className="font-medium text-red-700">Call Emergency</span>
+                className="w-6 h-6 text-[#FF1493]" /* ...existing SVG... */
+              />
+              <span className="font-bold text-[#FF1493]">Call Emergency</span>
             </button>
+
             <button
               onClick={() =>
                 sendEmergencySMS(emergencyContacts.map((c) => c.number))
               }
-              className="flex items-center justify-center space-x-2 bg-blue-100 p-4 rounded-lg hover:bg-blue-200 transition-colors"
+              className="flex items-center justify-center space-x-2 bg-white p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
             >
               <svg
                 className="w-6 h-6 text-blue-700"
@@ -283,13 +422,16 @@ const HelpPage = () => {
               <span className="font-medium text-blue-700">Send SOS</span>
             </button>
           </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-4 flex items-center justify-between">
+
+          {/* Emergency Contacts */}
+          <div className="bg-[#FFF5F7] rounded-xl p-4 border-2 border-black">
+            <h4 className="font-bold text-black mb-4 flex items-center justify-between">
               Emergency Contacts
-              <button className="text-sm text-blue-600 hover:text-blue-800">
+              <button className="text-sm text-[#FF1493] hover:text-black transition-colors">
                 Add Contact
               </button>
             </h4>
+
             <div className="space-y-2">
               {emergencyContacts.map((contact) => (
                 <div
@@ -343,322 +485,214 @@ const HelpPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 
+  const renderFacilities = () => {
+    const { hospitals, policeStations } = getFilteredFacilities();
+    return (
+      <div className="space-y-8">
+        {/* Hospitals Section */}
+        {hospitals.length > 0 && (
+          <section className="bg-white rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] overflow-hidden">
+            <div className="border-b-4 border-black bg-pink-50 px-6 py-4">
+              <h2 className="text-2xl font-bold text-[#FF1493]">
+                Emergency Medical Services
+              </h2>
+              <p className="text-sm font-medium text-gray-600 mt-1">
+                Nearby hospitals and medical facilities
+              </p>
+            </div>
+
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {hospitals.map((place) => (
+                <FacilityCard
+                  key={place.id}
+                  place={place}
+                  type="hospital"
+                  location={location}
+                  calculateDistance={calculateDistance} // Pass the function here
+                  onCall={() => handleEmergencyCall(place.tags.phone || "112")}
+                  onGetDirections={(e) => {
+                    e.stopPropagation();
+                    window.open(
+                      `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${location.latitude},${location.longitude};${place.lat},${place.lon}`,
+                      "_blank"
+                    );
+                  }}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Police Stations Section */}
+        {policeStations.length > 0 && (
+          <section className="bg-white rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] overflow-hidden">
+            <div className="border-b-4 border-black bg-blue-50 px-6 py-4">
+              <h2 className="text-2xl font-bold text-blue-600">
+                Law Enforcement
+              </h2>
+              <p className="text-sm font-medium text-gray-600 mt-1">
+                Nearby police stations
+              </p>
+            </div>
+
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {policeStations.map((place) => (
+                <FacilityCard
+                  key={place.id}
+                  place={place}
+                  type="police"
+                  location={location}
+                  calculateDistance={calculateDistance} // Pass the function here
+                  onCall={() => handleEmergencyCall(place.tags.phone || "100")}
+                  onGetDirections={(e) => {
+                    e.stopPropagation();
+                    window.open(
+                      `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${location.latitude},${location.longitude};${place.lat},${place.lon}`,
+                      "_blank"
+                    );
+                  }}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FFF5F7] pt-24">
       <Navbar />
       {showEmergencyPanel && <EmergencyPanel />}
 
       <div className="container mx-auto px-4 py-6">
         {/* Status Dashboard */}
         <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-xl p-6 border-4 border-black shadow-[8px_8px_0px_0px_#FF1493]"
+          >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Nearest Hospital</p>
-                <h3 className="text-xl font-semibold text-gray-900">
+                <p className="text-sm font-bold text-[#FF1493]">
+                  Nearest Hospital
+                </p>
+                <h3 className="text-xl font-bold text-black">
                   {hospitals[0]?.tags.name || "Searching..."}
                 </h3>
               </div>
               <span className="flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-[#FF1493] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF1493]"></span>
               </span>
             </div>
-            <p className="mt-2 text-sm text-gray-500">
-              {hospitals[0]
-                ? `${calculateDistance(
-                    location?.latitude,
-                    location?.longitude,
-                    hospitals[0].lat,
-                    hospitals[0].lon
-                  )}km away`
-                : "Calculating..."}
-            </p>
-          </div>
-
-          {/* Additional status cards... */}
+            {/* ...existing distance content... */}
+          </motion.div>
+          {/* ...other status cards... */}
         </div>
 
-        {/* Filter Tabs */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
-            {["all", "hospitals", "police"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSelectedTab(tab)}
-                className={`
-                  py-4 px-1 border-b-2 font-medium text-sm
-                  ${
-                    selectedTab === tab
-                      ? "border-blue-500 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }
-                `}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </nav>
+        {/* Enhanced Filter Tabs */}
+        <div className="mb-6 flex space-x-4">
+          {["all", "hospitals", "police"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setSelectedTab(tab)}
+              className={`
+                px-6 py-2 rounded-xl font-bold border-2 border-black transition-all duration-200 flex items-center space-x-2
+                ${
+                  selectedTab === tab
+                    ? "bg-[#FF1493] text-white shadow-[4px_4px_0px_0px_#000]"
+                    : "bg-white text-black hover:shadow-[4px_4px_0px_0px_#FF1493]"
+                }
+              `}
+            >
+              {tab === "hospitals" && (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+              )}
+              {tab === "police" && (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 6v18h18V6H3zm4 4h10M7 16h10M7 12h10"
+                  />
+                </svg>
+              )}
+              {tab === "all" && (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                  />
+                </svg>
+              )}
+              <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
+            </button>
+          ))}
         </div>
 
-        {/* Main content sections with conditional rendering based on selectedTab */}
+        {/* Error Message */}
         {error && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
-            <div className="flex items-center">
-              <svg
-                className="w-6 h-6 text-red-500 mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-              <span className="text-red-800">{error}</span>
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 bg-white border-4 border-black p-4 rounded-xl shadow-[8px_8px_0px_0px_#FF1493]"
+          >
+            {/* ...existing error content... */}
+          </motion.div>
         )}
 
+        {/* Main Content with Filtered Results */}
         {location ? (
-          <div className="space-y-8">
-            {/* Medical Services Section */}
-            <section className="bg-white shadow-sm rounded-lg overflow-hidden">
-              <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
-                <h2 className="text-xl font-semibold text-slate-800">
-                  Emergency Medical Services
-                </h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  Nearby hospitals and medical facilities
-                </p>
-              </div>
-
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {hospitals.map((place) => (
-                  <div
-                    key={place.id}
-                    className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                  >
-                    <div className="absolute top-4 right-4 z-10">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                        {calculateDistance(
-                          location.latitude,
-                          location.longitude,
-                          place.lat,
-                          place.lon
-                        )}
-                        km
-                      </span>
-                    </div>
-
-                    <div className="p-5">
-                      <div className="flex items-start">
-                        <div className="shrink-0">
-                          <svg
-                            className="w-6 h-6 text-red-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                            />
-                          </svg>
-                        </div>
-                        <div className="ml-4">
-                          <h3 className="text-lg font-medium text-slate-900">
-                            {place.tags.name || "Unnamed Hospital"}
-                          </h3>
-                          <p className="mt-1 text-sm text-slate-500">
-                            {place.tags.amenity}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex space-x-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const { latitude, longitude } = location;
-                            const { lat, lon } = place;
-                            window.open(
-                              `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
-                              "_blank"
-                            );
-                          }}
-                          className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          Directions
-                        </button>
-                        <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600">
-                          Call Now
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Police Stations Section - Similar professional styling */}
-              <section className="bg-white shadow-sm rounded-lg overflow-hidden">
-                <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
-                  <h2 className="text-xl font-semibold text-slate-800">
-                    Law Enforcement
-                  </h2>
-                  <p className="text-sm text-slate-500 mt-1">
-                    Nearby police stations
-                  </p>
-                </div>
-
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {policeStations.length > 0 ? (
-                    policeStations.map((place) => (
-                      <div
-                        key={place.id}
-                        className="group relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                      >
-                        <div className="absolute top-4 right-4 z-10">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {calculateDistance(
-                              location.latitude,
-                              location.longitude,
-                              place.lat,
-                              place.lon
-                            )}
-                            km
-                          </span>
-                        </div>
-
-                        <div className="p-5">
-                          <div className="flex items-start">
-                            <div className="shrink-0">
-                              <svg
-                                className="w-6 h-6 text-blue-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                                />
-                              </svg>
-                            </div>
-                            <div className="ml-4">
-                              <h3 className="text-lg font-medium text-slate-900">
-                                {place.tags.name || "Unnamed Police Station"}
-                              </h3>
-                              <p className="mt-1 text-sm text-slate-500">
-                                {place.tags.amenity}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="mt-4 flex space-x-3">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const { latitude, longitude } = location;
-                                const { lat, lon } = place;
-                                window.open(
-                                  `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${latitude},${longitude};${lat},${lon}`,
-                                  "_blank"
-                                );
-                              }}
-                              className="flex-1 flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                              <svg
-                                className="w-4 h-4 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                              </svg>
-                              Directions
-                            </button>
-                            <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                              Call Now
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full p-8 text-center">
-                      <p className="text-gray-500">
-                        Searching for nearby police stations... If none appear,
-                        try refreshing the page.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </section>
-            </section>
-          </div>
+          renderFacilities()
         ) : (
-          <div className="min-h-[60vh] flex flex-col items-center justify-center">
-            <div className="relative">
-              <div className="w-16 h-16">
-                <div className="absolute inset-0 rounded-full border-4 border-slate-200 border-t-red-600 animate-spin"></div>
-              </div>
-              <p className="mt-4 text-base font-medium text-slate-600">
-                Accessing location services...
-              </p>
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="min-h-[60vh] flex flex-col items-center justify-center"
+          >
+            {/* ...existing loading content... */}
+          </motion.div>
         )}
       </div>
 
-      {/* Emergency Action Button */}
+      {/* Enhanced Emergency Action Button */}
       <button
         onClick={() => setShowEmergencyPanel(true)}
         className="fixed bottom-6 right-6 z-40 group"
       >
-        <span className="absolute inset-0 rounded-full bg-red-600 animate-ping opacity-25"></span>
-        <div className="relative flex items-center justify-center w-16 h-16 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors">
+        <span className="absolute inset-0 rounded-xl bg-[#FF1493] animate-ping opacity-25"></span>
+        <div className="relative flex items-center justify-center w-16 h-16 bg-[#FF1493] text-white rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
           <svg
             className="w-8 h-8"
             fill="none"
@@ -669,9 +703,16 @@ const HelpPage = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5"
             />
           </svg>
+          <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse"></span>
         </div>
       </button>
     </div>

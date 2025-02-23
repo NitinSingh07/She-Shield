@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import Footer from "../components/Footer";
+import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -36,78 +37,80 @@ const ContactUs = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[#FFF5F7]">
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-red-50 to-orange-100 flex items-center justify-center relative">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+      <div className="pt-24 pb-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493] overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-[#FF1493] p-6 text-white text-center border-b-4 border-black">
+              <h2 className="text-3xl font-black">Get in Touch</h2>
+              <p className="mt-2 font-medium">
+                We're here to help and answer any questions you might have
+              </p>
+            </div>
 
-        {/* Floating Shapes */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-32 h-32 bg-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+            {/* Contact Form */}
+            <div className="p-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {[
+                  { name: "name", label: "Name", type: "text" },
+                  { name: "phone", label: "Phone no.", type: "tel" },
+                  { name: "message", label: "Message", type: "textarea" },
+                ].map((field) => (
+                  <div key={field.name} className="relative">
+                    <label className="block text-lg font-bold text-gray-700 mb-2">
+                      {field.label}
+                    </label>
+                    {field.type === "textarea" ? (
+                      <textarea
+                        name={field.name}
+                        value={formData[field.name]}
+                        onChange={handleChange}
+                        className="w-full p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] focus:shadow-none transform transition-all duration-200 focus:translate-x-1 focus:translate-y-1 focus:outline-none"
+                        rows="4"
+                      />
+                    ) : (
+                      <input
+                        type={field.type}
+                        name={field.name}
+                        value={formData[field.name]}
+                        onChange={handleChange}
+                        className="w-full p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] focus:shadow-none transform transition-all duration-200 focus:translate-x-1 focus:translate-y-1 focus:outline-none"
+                      />
+                    )}
+                  </div>
+                ))}
 
-        <div className="max-w-4xl w-full bg-white shadow-lg rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-            Contact Us
-          </h2>
-          <p className="text-center text-gray-600 mb-6">
-            Have questions or need assistance? Feel free to reach out to us.
-          </p>
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your name"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
+                <button
+                  type="submit"
+                  className="w-full bg-[#FF1493] text-white p-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+                >
+                  Send Message
+                </button>
+              </form>
+
+              {status && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-4 p-4 rounded-xl border-2 border-black bg-pink-50 text-center font-bold"
+                >
+                  {status}
+                </motion.div>
+              )}
             </div>
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Phone no.
-              </label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter your Phone Number"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Message
-              </label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="Write your message here..."
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 h-32"
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition"
-            >
-              Send Message
-            </button>
-          </form>
-          {status && <p className="text-center mt-4 text-gray-700">{status}</p>}
+          </motion.div>
         </div>
       </div>
+
       <Footer />
-    </>
+    </div>
   );
 };
 

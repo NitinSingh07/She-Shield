@@ -31,13 +31,13 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/reportincident" element={<Complaints />} />
             <Route path="/training" element={<Training />} />
-            <Route path="/forum" element={<Forum />} />
+            <Route path="/postforums" element={<Forum />} />
             <Route path="/emergency" element={<Emergency />} />
             <Route path="/help" element={<HelpPage />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/aboutus" element={<AboutUs />} />
+            <Route path="/contactus" element={<ContactUs />} />
           </Routes>
         </SocketProvider>
       </AuthProvider>
