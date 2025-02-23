@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
   FaFacebookF,
@@ -35,18 +34,18 @@ const quickLinks = [
     icon: "🏠",
   },
   {
-    name: "Complaints",
-    href: "/complaints",
+    name: "Report Incident",
+    href: "/reportincident",
     icon: "📝",
   },
   {
-    name: "Training",
-    href: "/training",
+    name: "About us",
+    href: "/aboutus",
     icon: "📚",
   },
   {
     name: "Forum",
-    href: "/forum",
+    href: "/postforums",
     icon: "💬",
   },
   {
@@ -73,7 +72,7 @@ const contactInfo = [
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t-4 border-black mt-auto">
+    <footer className="bg-white border-t border-black mt-auto">
       <div className="container mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -95,13 +94,13 @@ const Footer = () => {
             </p>
 
             {/* Social Links */}
-            <div className="flex space-x-4">
+            <div className="social-links flex space-x-4">
               {socialLinks.map((link) => (
                 <motion.a
                   key={link.name}
                   href={link.href}
                   whileHover={{ scale: 1.1 }}
-                  className="w-10 h-10 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#FF1493] 
+                  className="w-10 h-10 rounded-xl border border-black shadow-[2px_2px_0px_0px_#FF1493] 
                            flex items-center justify-center hover:shadow-none 
                            transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
                 >
@@ -134,7 +133,7 @@ const Footer = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-6 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#FF1493]"
+            className="bg-white p-6 rounded-xl border border-black shadow-[8px_8px_0px_0px_#FF1493]"
           >
             <h3 className="font-bold text-xl mb-4">Contact Us</h3>
             <div className="space-y-4">

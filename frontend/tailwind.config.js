@@ -50,6 +50,9 @@ export default {
       fontFamily: {
         mono: ["Space Mono", "monospace"],
       },
+      backdropBlur: {
+        sm: "4px",
+      },
     },
   },
   plugins: [

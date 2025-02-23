@@ -133,9 +133,23 @@ const Home = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={mapInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8 }}
-          className="relative bg-white p-8 rounded-3xl border-4 border-black shadow-[12px_12px_0px_0px_#FF1493] mb-20"
+          className="relative bg-white p-8 rounded-3xl border border-black mb-20" // Updated border class
         >
+          {/* Decorative Elements */}
           <div className="absolute -top-6 -right-6 w-12 h-12 bg-[#FF1493] rounded-full border-4 border-black"></div>
+          <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-black rounded-full border-4 border-[#FF1493]"></div>
+
+          {/* Title */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-black text-black">
+              Crime Analytics Map
+              <div className="h-2 w-32 bg-[#FF1493] mt-2 rounded-full"></div>
+            </h2>
+            <p className="text-gray-600 mt-2">
+              Explore crime statistics and emergency services across India
+            </p>
+          </div>
+
           <Map />
         </motion.section>
 
@@ -155,7 +169,7 @@ const Home = () => {
           className="mb-20 relative"
         >
           <div className="absolute -top-10 -left-10 w-20 h-20 border-4 border-[#FF1493] rounded-full"></div>
-          <div className="bg-white p-8 rounded-3xl border-4 border-black shadow-[12px_12px_0px_0px_#FF1493] relative z-10">
+          <div className="bg-white p-8 rounded-3xl border border-black relative z-10"> {/* Updated border class */}
             <FeatureCards />
           </div>
           <div className="absolute -bottom-10 -right-10 w-20 h-20 border-4 border-black rounded-lg transform -rotate-12"></div>

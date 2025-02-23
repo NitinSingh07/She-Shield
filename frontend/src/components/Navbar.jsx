@@ -32,14 +32,14 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-white border-b-4 border-black shadow-[0px_4px_0px_0px_#FF1493] fixed w-full top-0 z-50">
+    <nav className="bg-white border-b border-black shadow-[0px_2px_0px_0px_#FF1493] fixed w-full top-0 z-50">
       <div className="container mx-auto flex justify-between items-center p-2">
         <Link
           to="/"
           className="transform hover:scale-105 transition-transform duration-300"
         >
           <img
-            className="w-40 h-13 shadow-[4px_4px_0px_0px_#FF1493] rounded-xl border-2 border-black p-1"
+            className="w-40 h-13 shadow-[4px_4px_0px_0px_#FF1493] rounded-xl border border-black p-1"
             src="/logo.png"
             alt="She-Shield"
           />
@@ -150,7 +150,7 @@ const Navbar = () => {
 
                         <button
                           onClick={handleLogout}
-                          className="w-full bg-[#FF1493] text-white px-4 py-2 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200 mt-2"
+                          className="w-full bg-[#FF1493] text-white px-4 py-2 rounded-xl font-bold border border-black shadow-[2px_2px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200 mt-2"
                         >
                           Logout
                         </button>

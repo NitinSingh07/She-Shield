@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { motion } from "framer-motion";
 
 // Add this state coordinates mapping at the top of the file, outside the component
 const stateCoordinates = {
@@ -279,276 +280,273 @@ const Map = () => {
   };
 
   return (
-    <div className="flex h-screen rounded-3xl">
+    <div className="relative flex h-[75vh] rounded-3xl z-0">
+      {" "}
+      {/* Reduced height */}
       {/* Left Side - Map */}
-      <div className="w-1/2  h-screen p-4">
-        <div className="h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
-          <div id="map" className="h-full w-full"></div>
-        </div>
-      </div>
-
-      {/* Right Side - Details */}
-      <div id="map" className=" w-1/2 h-screen p-4">
-        <div className="h-full flex flex-col gap-4">
-          {/* Header Section - Made More Compact */}
-          <div className="bg-white rounded-2xl shadow-lg p-3">
-            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-              <ShieldExclamationIcon className="h-6 w-6 text-red-500" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-purple-600">
-                Women Crime Analytics
-              </span>
-            </h2>
-            {userLocation && cyberCrimesData.length > 0 && (
-              <div className="mt-1 p-1.5 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl">
-                <p className="text-xs font-medium text-blue-800 flex items-center gap-1">
-                  <MapPinIcon className="h-3 w-3" />
-                  Your Current Location : {cyberCrimesData[0].state_ut} (
-                  {userLocation.lat} , {userLocation.lng})
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Stats Grid - More Compact Layout */}
-          <div className="grid grid-cols-3 gap-3 flex-none">
-            {cyberCrimesData.length > 0 && (
-              <>
-                {/* Total Cases Card - Spans Full Width */}
-                <div className="col-span-3 p-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white flex justify-between items-center">
-                  <h3 className="text-sm font-semibold">Total Cyber Crimes</h3>
-                  <p className="text-2xl font-bold">
-                    {cyberCrimesData[0].total_cyber_crimes_against_women}
-                  </p>
-                </div>
-
-                {/* Make stat cards span 1/3 width each */}
-                <CompactStatCard
-                  title="Cyber Blackmailing"
-                  value={
-                    cyberCrimesData[0]
-                      .cyber_blackmailing__threatening__sec_506__503__384_ipc_r_w_it_act_
-                  }
-                  icon={<ExclamationTriangleIcon className="h-4 w-4" />}
-                  gradient="from-red-100 to-red-200"
-                  textColor="text-red-700"
-                />
-
-                <CompactStatCard
-                  title="Cyber Stalking"
-                  value={
-                    cyberCrimesData[0]
-                      .cyber_stalking__cyber_bullying_of_women__sec_354d_ipc_r_w_it_act_
-                  }
-                  icon={<UserGroupIcon className="h-4 w-4" />}
-                  gradient="from-purple-100 to-purple-200"
-                  textColor="text-purple-700"
-                />
-
-                <CompactStatCard
-                  title="Cyber Pornography"
-                  value={
-                    cyberCrimesData[0]
-                      .cyber_pornography__hosting__publishing_obscene_sexual_materials__sec_67a_67b_girl_child__of_it_act_r_w_other_ipc_sll_
-                  }
-                  icon={<ExclamationTriangleIcon className="h-4 w-4" />}
-                  gradient="from-pink-100 to-pink-200"
-                  textColor="text-pink-700"
-                />
-
-                <CompactStatCard
-                  title="Defamation"
-                  value={
-                    cyberCrimesData[0]
-                      .defamation__morphing__sec_469_ipc_r_w_ipc_and_indecent_rep__of_women__p__act___it_act_
-                  }
-                  icon={<DocumentDuplicateIcon className="h-4 w-4" />}
-                  gradient="from-indigo-100 to-indigo-200"
-                  textColor="text-indigo-700"
-                />
-
-                <CompactStatCard
-                  title="Fake Profiles"
-                  value={cyberCrimesData[0].fake_profile__it_act_r_w_ipc_sll_}
-                  icon={<UserIcon className="h-4 w-4" />}
-                  gradient="from-orange-100 to-orange-200"
-                  textColor="text-orange-700"
-                />
-
-                <CompactStatCard
-                  title="Other Crimes"
-                  value={cyberCrimesData[0].other_crimes_against_women}
-                  icon={<ExclamationTriangleIcon className="h-4 w-4" />}
-                  gradient="from-green-100 to-green-200"
-                  textColor="text-green-700"
-                />
-              </>
-            )}
-          </div>
-
-          {/* Chart Section - Fills Remaining Space */}
-          {cyberCrimesData.length > 0 && (
-            <div className="flex-1 bg-white rounded-xl relative overflow-hidden group">
-              {/* Decorative Elements */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"></div>
-              <div className="absolute -right-10 -top-10 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-20"></div>
-              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
-
-              <div className="relative z-10 p-6 h-full flex flex-col">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h3 className="text-md font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-                      Crime Distribution Analysis
-                    </h3>
-                  </div>
-                  <div className="flex gap-2">
-                    {["Day", "Week", "Month", "Year"].map((period) => (
-                      <button
-                        key={period}
-                        className="px-3 py-1 text-xs font-medium rounded-full 
-                                 bg-gray-100 text-gray-600 hover:bg-purple-100 
-                                 hover:text-purple-600 transition-colors"
-                      >
-                        {period}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex-1 relative min-h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={prepareChartData(cyberCrimesData)}
-                      layout="vertical"
-                      margin={{ top: 20, right: 30, left: 90, bottom: 20 }}
-                    >
-                      <defs>
-                        {prepareChartData(cyberCrimesData).map(
-                          (entry, index) => (
-                            <linearGradient
-                              key={`gradient-${index}`}
-                              id={`barGradient-${index}`}
-                              x1="0"
-                              y1="0"
-                              x2="1"
-                              y2="0"
-                            >
-                              <stop
-                                offset="0%"
-                                stopColor={entry.color}
-                                stopOpacity={0.8}
-                              />
-                              <stop
-                                offset="100%"
-                                stopColor={entry.color}
-                                stopOpacity={0.4}
-                              />
-                            </linearGradient>
-                          )
-                        )}
-                      </defs>
-
-                      <XAxis
-                        type="number"
-                        stroke="#94a3b8"
-                        strokeWidth={0.5}
-                        style={{
-                          fontSize: "12px",
-                          fontFamily: "Inter, sans-serif",
-                        }}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        type="category"
-                        dataKey="name"
-                        width={85}
-                        stroke="#94a3b8"
-                        strokeWidth={0.5}
-                        style={{
-                          fontSize: "12px",
-                          fontFamily: "Inter, sans-serif",
-                          fontWeight: "500",
-                        }}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        cursor={{ fill: "rgba(224, 231, 255, 0.2)" }}
-                        contentStyle={{
-                          backgroundColor: "rgba(255, 255, 255, 0.97)",
-                          borderRadius: "12px",
-                          border: "none",
-                          boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                          padding: "12px",
-                        }}
-                        labelStyle={{ color: "#374151", fontWeight: 600 }}
-                      />
-                      <Bar
-                        dataKey="value"
-                        radius={[6, 6, 6, 6]}
-                        barSize={24}
-                        animationDuration={1500}
-                      >
-                        {prepareChartData(cyberCrimesData).map(
-                          (entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={`url(#barGradient-${index})`}
-                              className="transition-all duration-300 hover:brightness-110 hover:scale-x-105 origin-left"
-                              style={{
-                                filter:
-                                  "drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.1))",
-                              }}
-                            />
-                          )
-                        )}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                {/* Legend */}
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  {prepareChartData(cyberCrimesData).map((entry, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: entry.color }}
-                      ></div>
-                      <span className="text-xs text-gray-600 font-medium">
-                        {entry.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+      <div className="w-1/3 p-2">
+        {" "}
+        {/* Reduced width and padding */}
+        <div className="relative h-full rounded-2xl overflow-hidden border border-black bg-white">
+          {/* Loading State */}
+          {!map && (
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 border-4 border-[#FF1493] border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600 font-medium">Loading map...</p>
               </div>
             </div>
           )}
+
+          <div id="map" className="h-full w-full"></div>
+
+          {/* Map Controls */}
+          <div className="absolute top-4 right-4 bg-white rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#FF1493] p-2 space-y-2">
+            <button
+              onClick={() => map?.setZoom((map.getZoom() || 5) + 1)}
+              className="p-2 hover:bg-pink-50 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" /* ...existing svg... */ />
+            </button>
+            <button
+              onClick={() => map?.setZoom((map.getZoom() || 5) - 1)}
+              className="p-2 hover:bg-pink-50 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" /* ...existing svg... */ />
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* Right Side - Analytics */}
+      <div className="w-2/3 p-2">
+        {" "}
+        {/* Increased width and reduced padding */}
+        <div className="h-full flex flex-col gap-2">
+          {" "}
+          {/* Reduced gap */}
+          {/* Header */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 border border-black hover:shadow-[4px_4px_0px_0px_#FF1493] transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF1493] to-pink-400 flex items-center justify-center border-2 border-black">
+                  <ShieldExclamationIcon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FF1493] to-purple-600">
+                    Crime Analytics Dashboard
+                  </h2>
+                  {userLocation && cyberCrimesData.length > 0 && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <MapPinIcon className="h-3 w-3 text-blue-600" />
+                      <p className="text-xs font-medium text-blue-800">
+                        {cyberCrimesData[0].state_ut}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Real-time Indicator */}
+              <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border-2 border-black">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs font-bold text-green-700">
+                  Live Data
+                </span>
+              </div>
+            </div>
+          </div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-6 gap-2">
+            {" "}
+            {/* Changed to 6 columns */}
+            {cyberCrimesData.length > 0 && (
+              <>
+                <div className="col-span-6 p-2 rounded-xl border border-black bg-gradient-to-r from-[#FF1493] to-pink-500">
+                  <div className="relative z-10 flex justify-between items-center">
+                    <div>
+                      <h3 className="text-white font-bold">
+                        Total Cyber Crimes
+                      </h3>
+                      <p className="text-3xl font-black text-white mt-1">
+                        {cyberCrimesData[0].total_cyber_crimes_against_women}
+                      </p>
+                    </div>
+                    <div className="w-16 h-16 bg-white/10 rounded-xl border-2 border-white/20 flex items-center justify-center">
+                      <ExclamationTriangleIcon className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full transform translate-x-16 -translate-y-16"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-black opacity-10 rounded-full transform -translate-x-12 translate-y-12"></div>
+                </div>
+
+                {/* Stat Cards */}
+                {prepareChartData(cyberCrimesData).map((stat, index) => (
+                  <CompactStatCard
+                    key={index}
+                    title={stat.name}
+                    value={stat.value}
+                    icon={getIconForStat(stat.name)}
+                    gradient={`from-${stat.color}/10 to-${stat.color}/20`}
+                    textColor={`text-${stat.color}`}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+          {/* Chart Section */}
+          <div className="flex-1 min-h-0 bg-white rounded-xl border border-black relative overflow-hidden">
+            <div className="relative z-10 p-3 h-full flex flex-col">
+              {" "}
+              {/* Reduced padding */}
+              {/* Chart Header */}
+              <div className="flex justify-between items-center mb-1">
+                {" "}
+                {/* Reduced margin */}
+                <h3 className="text-base font-bold">Crime Distribution</h3>
+                <div className="flex gap-1 bg-gray-50 p-1 rounded-lg border-1 border-black">
+                  {["D", "W", "M", "Y"].map((period) => (
+                    <button
+                      key={period}
+                      className="px-2 py-0.5 text-xs font-bold rounded-md hover:bg-[#FF1493] hover:text-white"
+                    >
+                      {period}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Chart Container */}
+              <div className="flex-1 -mx-2">
+                {" "}
+                {/* Adjusted margin */}
+                <ResponsiveContainer width="100%" height={280}>
+                  {" "}
+                  {/* Fixed height */}
+                  <BarChart
+                    data={prepareChartData(cyberCrimesData)}
+                    layout="vertical"
+                    margin={{ top: 5, right: 20, left: 60, bottom: 5 }}
+                  >
+                    <defs>
+                      {prepareChartData(cyberCrimesData).map((entry, index) => (
+                        <linearGradient
+                          key={`gradient-${index}`}
+                          id={`barGradient-${index}`}
+                          x1="0"
+                          y1="0"
+                          x2="1"
+                          y2="0"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor={entry.color}
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor={entry.color}
+                            stopOpacity={0.4}
+                          />
+                        </linearGradient>
+                      ))}
+                    </defs>
+
+                    <XAxis
+                      type="number"
+                      stroke="#94a3b8"
+                      strokeWidth={0.5}
+                      style={{
+                        fontSize: "12px",
+                        fontFamily: "Inter, sans-serif",
+                      }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      type="category"
+                      dataKey="name"
+                      width={60}
+                      fontSize={10}
+                      tick={{ fill: "#666" }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip
+                      cursor={{ fill: "rgba(224, 231, 255, 0.2)" }}
+                      contentStyle={{
+                        backgroundColor: "rgba(255, 255, 255, 0.97)",
+                        borderRadius: "12px",
+                        border: "none",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                        padding: "12px",
+                      }}
+                      labelStyle={{ color: "#374151", fontWeight: 600 }}
+                    />
+                    <Bar
+                      dataKey="value"
+                      barSize={16}
+                      radius={[6, 6, 6, 6]}
+                      animationDuration={1500}
+                    >
+                      {prepareChartData(cyberCrimesData).map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={`url(#barGradient-${index})`}
+                          className="transition-all duration-300 hover:brightness-110 hover:scale-x-105 origin-left"
+                          style={{
+                            filter:
+                              "drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.1))",
+                          }}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              {/* Compact Legend */}
+              <div className="flex flex-wrap gap-1 mt-1 px-1">
+                {prepareChartData(cyberCrimesData).map((entry, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded-md"
+                  >
+                    {/* <div
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: entry.color }}
+                    /> */}
+                    {/* <span className="text-[10px] font-medium text-gray-600">
+                      {entry.name}
+                    </span> */}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// Update CompactStatCard for more compact design
+// Updated CompactStatCard for better space efficiency
 const CompactStatCard = ({ title, value, icon, gradient, textColor }) => (
-  <div
-    className={`p-2.5 rounded-xl bg-gradient-to-r ${gradient} hover:scale-[1.02] transition-transform duration-300`}
+  <motion.div
+    whileHover={{ scale: 1.02 }}
+    className={`p-2 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000] 
+                bg-gradient-to-br ${gradient} hover:shadow-none transform 
+                hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200`}
   >
-    <div className="flex items-center gap-1.5 mb-1">
-      <div className={textColor}>{icon}</div>
-      <h4 className="text-xs font-medium text-gray-800">{title}</h4>
+    <div className="flex items-center gap-1">
+      <div className={`p-1 rounded-md bg-white/50 ${textColor}`}>{icon}</div>
+      <h4 className="text-[10px] font-bold text-gray-800 truncate">{title}</h4>
     </div>
-    <p className={`text-lg font-bold ${textColor}`}>{value}</p>
-  </div>
+    <p className={`text-sm font-black ${textColor} mt-1`}>{value}</p>
+  </motion.div>
 );
 
-// Tip Component
-// const Tip = ({ icon, text }) => (
-//   <div className="flex items-center gap-1 bg-white/50 rounded-full px-3 py-1">
-//     <span className="text-green-600">{icon}</span>
-//     <span className="text-xs text-green-800">{text}</span>
-//   </div>
-// );
+// Helper function to get icons
+const getIconForStat = (name) => {
+  // ...implement icon mapping based on stat name
+};
 
 export default Map;

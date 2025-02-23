@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
-import moment from "moment";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion"; // Add this import
 

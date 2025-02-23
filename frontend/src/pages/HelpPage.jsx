@@ -1,7 +1,32 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
+import Footer from "../components/Footer";
 
+// Add this animated background component
+const AnimatedBackground = () => (
+  <div className="fixed inset-0 -z-10 overflow-hidden">
+    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+    <motion.div
+      animate={{
+        scale: [1, 1.2, 1],
+        rotate: [0, 90, 0],
+      }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-[#FF1493] to-pink-200 opacity-20 blur-3xl"
+    />
+    <motion.div
+      animate={{
+        scale: [1, 1.5, 1],
+        rotate: [0, -90, 0],
+      }}
+      transition={{ duration: 15, repeat: Infinity, ease: "linear", delay: 1 }}
+      className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr from-pink-200 to-[#FF1493] opacity-20 blur-3xl"
+    />
+  </div>
+);
+
+// Enhanced FacilityCard with creative elements
 const FacilityCard = ({
   place,
   type,
@@ -22,23 +47,37 @@ const FacilityCard = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative bg-white p-6 rounded-xl border-4 border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300 transform hover:-translate-y-1"
+      whileHover={{ y: -5 }}
+      className="relative bg-white p-6 rounded-xl border-4 border-black hover:shadow-[8px_8px_0px_0px_#FF1493] transition-all duration-300"
     >
-      {/* Creative Distance Badge */}
-      <div className="absolute -top-4 -right-4 transform rotate-6">
-        <div
-          className={`
-          relative px-4 py-2 ${
+      {/* Creative Status Indicator */}
+      {/* <div className="absolute top-4 right-4 flex items-center gap-2">
+        <motion.div
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className={`w-3 h-3 rounded-full ${
             isHospital ? "bg-[#FF1493]" : "bg-blue-600"
-          } text-white 
-          rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000]
-          hover:rotate-0 transition-all duration-300
-        `}
+          }`}
+        />
+        <span className="text-xs font-bold">
+          {isHospital ? "Emergency Ready" : "On Duty"}
+        </span>
+      </div> */}
+
+      {/* Enhanced Distance Badge */}
+      {/* <div className="absolute -top-4 -left-4 transform -rotate-6">
+        <motion.div
+          whileHover={{ rotate: 0 }}
+          className={`
+            px-4 py-2 ${isHospital ? "bg-[#FF1493]" : "bg-blue-600"} text-white
+            rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000]
+            transition-all duration-300
+          `}
         >
           <span className="text-lg font-bold">{distance}km</span>
           <div className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-white border-2 border-black"></div>
-        </div>
-      </div>
+        </motion.div>
+      </div> */}
 
       {/* Facility Icon & Details */}
       <div className="flex items-start space-x-4">
@@ -115,7 +154,7 @@ const FacilityCard = ({
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          Get Directions
+          Directions
         </button>
         <button
           onClick={onCall}
@@ -126,6 +165,27 @@ const FacilityCard = ({
         >
           Call Now
         </button>
+      </div>
+
+      {/* Add facility status indicators */}
+      <div className="mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+        <div className="flex justify-between text-xs font-medium">
+          <span
+            className={`${isHospital ? "text-[#FF1493]" : "text-blue-600"}`}
+          >
+            ⏰ 24/7 Available
+          </span>
+          <span className="text-gray-600">
+            📍{" "}
+            {calculateDistance(
+              location.latitude,
+              location.longitude,
+              place.lat,
+              place.lon
+            )}
+            km away
+          </span>
+        </div>
       </div>
     </motion.div>
   );
@@ -567,11 +627,33 @@ const HelpPage = () => {
   return (
     <div className="min-h-screen bg-[#FFF5F7] pt-24">
       <Navbar />
+      <AnimatedBackground />
       {showEmergencyPanel && <EmergencyPanel />}
 
       <div className="container mx-auto px-4 py-6">
-        {/* Status Dashboard */}
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Enhanced Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl font-black text-black">
+            Emergency Services Hub
+            <div className="h-2 w-32 bg-[#FF1493] mx-auto mt-2 rounded-full"></div>
+          </h1>
+          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+            Quick access to nearby hospitals and police stations. Help is just a
+            click away.
+          </p>
+        </motion.div>
+
+        {/* Enhanced Stats Dashboard */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+        >
+          {/* Stats cards with creative styling */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -594,10 +676,14 @@ const HelpPage = () => {
             {/* ...existing distance content... */}
           </motion.div>
           {/* ...other status cards... */}
-        </div>
+        </motion.div>
 
         {/* Enhanced Filter Tabs */}
-        <div className="mb-6 flex space-x-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mb-6 flex space-x-4 justify-center"
+        >
           {["all", "hospitals", "police"].map((tab) => (
             <button
               key={tab}
@@ -659,7 +745,7 @@ const HelpPage = () => {
               <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Error Message */}
         {error && (
@@ -681,15 +767,20 @@ const HelpPage = () => {
             animate={{ opacity: 1 }}
             className="min-h-[60vh] flex flex-col items-center justify-center"
           >
-            {/* ...existing loading content... */}
+            <div className="w-16 h-16 border-4 border-[#FF1493] border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-gray-600">
+              Locating nearest emergency services...
+            </p>
           </motion.div>
         )}
       </div>
 
-      {/* Enhanced Emergency Action Button */}
-      <button
+      {/* Enhanced Emergency Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setShowEmergencyPanel(true)}
-        className="fixed bottom-6 right-6 z-40 group"
+        className="fixed bottom-6 right-6 z-40"
       >
         <span className="absolute inset-0 rounded-xl bg-[#FF1493] animate-ping opacity-25"></span>
         <div className="relative flex items-center justify-center w-16 h-16 bg-[#FF1493] text-white rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-none transform hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
@@ -714,7 +805,8 @@ const HelpPage = () => {
           </svg>
           <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse"></span>
         </div>
-      </button>
+      </motion.button>
+      <Footer/>
     </div>
   );
 };
