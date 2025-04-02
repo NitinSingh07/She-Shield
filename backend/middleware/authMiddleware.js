@@ -4,45 +4,49 @@ const User = require("../models/User");
 
 const protect = async (req, res, next) => {
   try {
-    // Get token from authorization header
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      return res.status(401).json({
+    let token;
+
+    if (req.headers.authorization?.startsWith("Bearer")) {
+      try {
+        token = req.headers.authorization.split(" ")[1].trim();
+
+        if (!token) {
+          throw new Error("No token found");
+        }
+
+        // Log token for debugging
+        console.log("Received token:", token);
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded token:", decoded);
+
+        const user = await User.findById(decoded.id).select("-password");
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        req.user = user;
+        next();
+      } catch (error) {
+        console.error("Token verification failed:", error);
+        res.status(401).json({
+          success: false,
+          message: "Not authorized",
+          error: error.message,
+        });
+      }
+    } else {
+      res.status(401).json({
         success: false,
-        message: "No authorization header or invalid format",
+        message: "Not authorized, no token",
       });
     }
-
-    const token = authHeader.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "No token provided",
-      });
-    }
-
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Get user from database
-    const user = await User.findById(decoded.id).select("-password");
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    req.user = user;
-    next();
   } catch (error) {
     console.error("Auth middleware error:", error);
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
-      message:
-        error.name === "JsonWebTokenError"
-          ? "Invalid token format"
-          : error.message,
+      message: "Authentication failed",
+      error: error.message,
     });
   }
 };
