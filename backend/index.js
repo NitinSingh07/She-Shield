@@ -2,13 +2,24 @@ const express = require("express");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const http = require("http");
-const corsOptions = require("./config/cors.config");
 
 const app = express();
 const server = http.createServer(app);
 
 // Apply CORS middleware
-app.use(cors(corsOptions));
+const allowedOrigins = process.env.FRONTEND_URL.split(",");
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 // Middleware
 app.use(express.json());
@@ -17,9 +28,14 @@ app.use(express.urlencoded({ extended: true }));
 // Initialize Socket.IO with CORS settings
 const io = new Server(server, {
   cors: {
-    origin: corsOptions.origin,
-    methods: corsOptions.methods,
-    credentials: corsOptions.credentials,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   },
 });
 
