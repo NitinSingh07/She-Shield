@@ -8,6 +8,7 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 
 const connectDB = require("./config/db"); // Import the connectDB function
+const corsOptions = require("./config/cors.config"); // Import CORS options
 const authRoutes = require("./routes/authRoutes");
 const complaintRoutes = require("./routes/complaintRoutes");
 const trainingRoutes = require("./routes/trainingRoutes");
@@ -18,12 +19,7 @@ const path = require("path");
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: {
-    origin: ["http://localhost:5173", "https://she-shield.vercel.app"],
-    methods: ["GET", "POST"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  },
+  cors: corsOptions, // Use the same CORS configuration for socket.io
 });
 
 // Store connected users
@@ -60,24 +56,8 @@ io.on("connection", (socket) => {
 app.set("io", io);
 app.set("connectedUsers", connectedUsers);
 
-const allowedOrigins = [
-  "https://she-shield.vercel.app", // Production frontend
-  "http://localhost:5173", // Local development frontend
-];
-
-// Updated CORS configuration
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+// Use the imported CORS options
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
